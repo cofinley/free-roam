@@ -38,7 +38,7 @@ function loadFirstPage() {
 
 function populateFileSidebar() {
     $("#file-list").html("");
-    Object.keys(pages).forEach(pageTitle => {
+    Object.keys(pages).forEach(function(pageTitle) {
         $("<a/>")
             .prop("href", "#")
             .addClass("list-group-item list-group-item-dark list-group-item-action sidebar-link")
@@ -113,7 +113,7 @@ function getTempTitle() {
 
 function listenForTextChanges() {
     var lastCharWasOpenBracket = false;
-    $(document).off("keyup").on("keyup", ".line-edit", function(e) {
+    $(document).off("keydown").on("keydown", ".line-edit", function(e) {
         if (e.originalEvent.keyCode) {
             if (219 === e.originalEvent.keyCode) {
                 if (lastCharWasOpenBracket) {
@@ -128,6 +128,8 @@ function listenForTextChanges() {
                     .appendTo($(this).parent())
                     .css("min-height", 24)
                     .focus();
+                $newLineTextArea.textareaAutoSize();
+                return false;
             } else {
                 lastCharWasOpenBracket = false;
             }
@@ -149,7 +151,8 @@ function listenForLineClicks() {
         var $newTextArea = $("<textarea class='line-edit'>" + parseLinkOnFocus(this.innerHTML) + "</textarea>").replaceAll($(this));
         setTimeout(function() {
             $newTextArea.focus();
-            $newTextArea.css("min-height", height);
+            $newTextArea.css("min-height", height)
+            $newTextArea.textareaAutoSize();
             $newTextArea[0].setSelectionRange($newTextArea.val().trim().length, $newTextArea.val().trim().length);
         }, 0);
     });
