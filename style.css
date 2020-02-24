@@ -46,6 +46,13 @@
     padding: 7vh 25vw;
 }
 
+
+@media (max-width: 992px) {
+    #content {
+        padding: 7ch 10vw;
+    }
+}
+
 textarea {
     border: 0;
     background-color: transparent;
@@ -53,9 +60,9 @@ textarea {
     resize: none;
     color: #f8f9fa !important;
     outline: none;
-    overflow: auto;
+    overflow: hidden;
     overflow-wrap: break-word;
-    margin-left: -1px;
+    margin: -2px 0 0 -2px;
 }
 
 #popup {

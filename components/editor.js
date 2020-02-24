@@ -1,4 +1,5 @@
 (function() {
+    "use strict";
     var fr = window.fr;
 
     fr.editor = {
@@ -12,6 +13,12 @@
             ENTER: 13
         },
 
+        renderedClass: "line",
+        renderedSelector: ".line",
+        editClass: "line-edit",
+        editSelector: ".line-edit",
+        linkSelector: ".link",
+
         init: function() {
             this.watchTextChanges();
             this.watchClicks();
@@ -21,7 +28,7 @@
         watchTextChanges: function() {
             var lastCharWasOpenBracket = false;
             var self = this;
-            $(document).off("keydown").on("keydown", ".line-edit", function(e) {
+            $(document).off("keydown").on("keydown", this.editSelector, function(e) {
                 if (e.originalEvent.keyCode) {
                     if (self.keyCodes.LEFT_BRACKET === e.originalEvent.keyCode) {
                         if (lastCharWasOpenBracket) {
@@ -32,10 +39,8 @@
                             lastCharWasOpenBracket = true;
                         }
                     } else if (self.keyCodes.ENTER === e.originalEvent.keyCode) {
-                        var $newLineTextArea = $("<textarea/>")
-                            .addClass("line-edit")
+                        var $newLineTextArea = self.createNewEditor()
                             .appendTo($(this).parent())
-                            .css("min-height", 24)
                             .focus();
                         $newLineTextArea.textareaAutoSize();
                         return false;
@@ -51,21 +56,49 @@
             this.watchLinkClicks();
         },
 
+        createNewEditor: function() {
+            return $("<textarea/>")
+                .addClass(this.editClass)
+                .css("min-height", 24);
+        },
+
+        switchToEditor: function(nodeToEdit, height) {
+            var $textArea = this.createNewEditor()
+                .replaceAll($(nodeToEdit));
+
+            var value = fr.parser.parseLinkOnFocus(nodeToEdit.innerHTML.trim());
+            $textArea.val(value);
+
+            setTimeout(function() {
+                $textArea.focus();
+                $textArea.textareaAutoSize();
+
+                if (undefined !== height) {
+                    $textArea.height(height);
+                }
+
+                var end = $textArea.val().trim().length;
+                $textArea[0].setSelectionRange(end, end);
+            }, 0);
+        },
+
+        switchToRendered: function(nodeToRender) {
+            var plainText = $(nodeToRender).val();
+            var parsedHtml = fr.parser.linkBracketedText(plainText);
+            $(nodeToRender).replaceWith(`<div class='${this.renderedClass}'>` + parsedHtml + "</div>")
+            fr.page.save();
+        },
+
         watchFocusClicks: function() {
-            $(document).on("mousedown", ".line", function(e) {
+            var self = this;
+            $(document).on("mousedown", this.renderedSelector, function(e) {
                 var height = $(this).height();
-                var $newTextArea = $("<textarea class='line-edit'>" + fr.parser.parseLinkOnFocus(this.innerHTML.trim()) + "</textarea>").replaceAll($(this));
-                setTimeout(function() {
-                    $newTextArea.focus();
-                    $newTextArea.textareaAutoSize();
-                    $newTextArea.css("height", height)
-                    $newTextArea[0].setSelectionRange($newTextArea.val().trim().length, $newTextArea.val().trim().length);
-                }, 0);
+               self.switchToEditor(this, height);
             });
         },
 
         watchLinkClicks: function() {
-            $(document).on("mousedown", ".link", function(e) {
+            $(document).on("mousedown", this.linkSelector, function(e) {
                 e.stopImmediatePropagation();
                 var pageTitle = $(this).text().replace("[[", '').replace("]]", '');
                 fr.page.load(pageTitle);
@@ -73,11 +106,9 @@
         },
 
         watchBlurs: function() {
-            $(document).on("blur", ".line-edit", function(e) {
-                var plainText = $(this).val();
-                var parsedHtml = fr.parser.linkBracketedText(plainText);
-                $(this).replaceWith("<div class='line'>" + parsedHtml + "</div>")
-                fr.page.save();
+            var self = this;
+            $(document).on("blur", this.editSelector, function(e) {
+                self.switchToRendered(this);
             });
         }
     };

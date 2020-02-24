@@ -1,4 +1,5 @@
 (function() {
+    "use strict";
     var fr = window.fr;
 
     fr.leftSidebar = {
