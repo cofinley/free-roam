@@ -3,6 +3,7 @@
 
     fr.leftSidebar = {
         init: function() {
+            this.populate();
             this.watchFileClick();
         },
 
@@ -18,7 +19,7 @@
             Object.keys(fr.page.pages).forEach(function(pageTitle) {
                 $("<a/>")
                     .prop("href", "#")
-                    .addClass("list-group-item list-group-item-dark list-group-item-action sidebar-link")
+                    .addClass("list-group-item list-group-item-action sidebar-link")
                     .text(pageTitle)
                     .appendTo($("#file-list"));
             });

@@ -2,7 +2,7 @@
     var fr = window.fr;
 
     fr.editor = {
-        keyCodes = {
+        keyCodes: {
             LEFT_BRACKET: 219,
             RIGHT_BRACKET: 221,
             LEFT_ARROW: 37,
@@ -20,18 +20,20 @@
 
         watchTextChanges: function() {
             var lastCharWasOpenBracket = false;
+            var self = this;
             $(document).off("keydown").on("keydown", ".line-edit", function(e) {
                 if (e.originalEvent.keyCode) {
-                    if (this.keyCodes.LEFT_BRACKET === e.originalEvent.keyCode) {
+                    if (self.keyCodes.LEFT_BRACKET === e.originalEvent.keyCode) {
                         if (lastCharWasOpenBracket) {
-                            toggleLinkDialog(true);
+                            fr.autocomplete.toggleLinkDialog(true);
                             lastCharWasOpenBracket = false;
                         } else {
-                            toggleLinkDialog(false);
+                            fr.autocomplete.toggleLinkDialog(false);
                             lastCharWasOpenBracket = true;
                         }
-                    } else if (this.keyCodes.ENTER === e.originalEvent.keyCode) {
-                        var $newLineTextArea = $("<textarea class='line-edit'/>")
+                    } else if (self.keyCodes.ENTER === e.originalEvent.keyCode) {
+                        var $newLineTextArea = $("<textarea/>")
+                            .addClass("line-edit")
                             .appendTo($(this).parent())
                             .css("min-height", 24)
                             .focus();
@@ -52,11 +54,11 @@
         watchFocusClicks: function() {
             $(document).on("mousedown", ".line", function(e) {
                 var height = $(this).height();
-                var $newTextArea = $("<textarea class='line-edit'>" + parseLinkOnFocus(this.innerHTML) + "</textarea>").replaceAll($(this));
+                var $newTextArea = $("<textarea class='line-edit'>" + fr.parser.parseLinkOnFocus(this.innerHTML.trim()) + "</textarea>").replaceAll($(this));
                 setTimeout(function() {
                     $newTextArea.focus();
-                    $newTextArea.css("min-height", height)
                     $newTextArea.textareaAutoSize();
+                    $newTextArea.css("height", height)
                     $newTextArea[0].setSelectionRange($newTextArea.val().trim().length, $newTextArea.val().trim().length);
                 }, 0);
             });
@@ -73,10 +75,9 @@
         watchBlurs: function() {
             $(document).on("blur", ".line-edit", function(e) {
                 var plainText = $(this).val();
-                var parsedHtml = linkBracketedText(plainText);
-                $(this)
-                    .replaceWith("<div class='line'>" + parsedHtml + "</div>")
-                save();
+                var parsedHtml = fr.parser.linkBracketedText(plainText);
+                $(this).replaceWith("<div class='line'>" + parsedHtml + "</div>")
+                fr.page.save();
             });
         }
     };

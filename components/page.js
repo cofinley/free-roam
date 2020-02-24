@@ -20,12 +20,12 @@
             page.content.split("\n").forEach(function(line) {
                 html += "<div class='line'>" + line + "</div>";
             });
-            var linkedHtml = linkBracketedText(html);
+            var linkedHtml = fr.parser.linkBracketedText(html);
             $("#title").text(page.title);
             $("#text").html(linkedHtml);
             $("#links").html("");
             if (page.links.size) {
-                $("#links").html(generateLinkFooterHtml(page));
+                $("#links").html(fr.refs.generateLinked(page));
             }
         },
 
@@ -45,7 +45,7 @@
                 links: new Set()
             };
             this.pages[title] = newPage;
-            populateFileSidebar();
+            fr.leftSidebar.populate();
             return newPage;
         },
 

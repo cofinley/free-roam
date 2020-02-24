@@ -14,10 +14,10 @@
             var pat = /\[\[([^\[\]]*)\]\]/g;
             var linkedHtml = html.replace(pat, function(match, textInsideBrackets) {
                 if (!(textInsideBrackets in fr.page.pages)) {
-                    newPage(textInsideBrackets);
+                    fr.page.new(textInsideBrackets);
                 }
-                var page = pages[textInsideBrackets];
-                page.links.add(currentPage.title);
+                var page = fr.page.pages[textInsideBrackets];
+                page.links.add(fr.page.current.title);
                 return `<span class='link'>${match}</span>`;
             });
             return linkedHtml;

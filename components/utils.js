@@ -1,9 +1,8 @@
 (function() {
-    var freeroam = window.freeroam;
+    var fr = window.fr;
 
-    freeroam.utils = {
-        insertAtCaret: function(text) {
-            var txtarea = $(".line-edit")[0];
+    fr.utils = {
+        insertAtCaret: function(txtarea, text) {
             if (!txtarea) {
                 return;
             }
