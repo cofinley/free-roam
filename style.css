@@ -54,6 +54,7 @@
 }
 
 textarea {
+    display: block;
     border: 0;
     background-color: transparent;
     width: 100%;
@@ -92,10 +93,6 @@ textarea {
     min-height: 24px;
     overflow: hidden;
     overflow-wrap: break-word;
-}
-
-.line-edit {
-    line-height: 1.5;
 }
 
 .link {

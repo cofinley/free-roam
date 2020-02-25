@@ -46,6 +46,32 @@
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             );
             return uuid.substring(uuid.length - 7, uuid.length - 1);
+        },
+
+        getTextWidth: function($node) {
+            // if given, use cached canvas for better performance
+            // else, create new canvas
+            var text = $node.text();
+            var font = $node.css("font-size") + " " + $node.css("font-family");
+            var canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
+            var context = canvas.getContext("2d");
+            context.font = font;
+            var metrics = context.measureText(text);
+            return metrics.width;
+        },
+
+        getWrappedLines: function($node) {
+            var text = $node.text();
+            var numLines = Math.ceil(this.getTextWidth($node) / $node.width());
+            var numCharsPerLine = text.length / numLines;
+            var lines = text.split(
+                new RegExp(`(?![^\\n]{1,${numCharsPerLine}}$)([^\\n]{1,${numCharsPerLine}})\\s`, 'g')
+            )
+            if (lines.length > 1 && lines[0] === "") {
+                return lines.splice(1);
+            } else {
+                return lines;
+            }
         }
     };
 })();
