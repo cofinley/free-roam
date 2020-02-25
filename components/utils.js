@@ -51,7 +51,7 @@
         getTextWidth: function($node) {
             // if given, use cached canvas for better performance
             // else, create new canvas
-            var text = $node.text();
+            var text = "TEXTAREA" === $node[0].nodeName ? $node.val() : $node.text();
             var font = $node.css("font-size") + " " + $node.css("font-family");
             var canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
             var context = canvas.getContext("2d");
@@ -61,7 +61,7 @@
         },
 
         getWrappedLines: function($node) {
-            var text = $node.text();
+            var text = "TEXTAREA" === $node[0].nodeName ? $node.val() : $node.text();
             var numLines = Math.ceil(this.getTextWidth($node) / $node.width());
             var numCharsPerLine = text.length / numLines;
             var lines = text.split(
@@ -72,6 +72,20 @@
             } else {
                 return lines;
             }
+        },
+
+        getCurrentLineIndex: function(caretPosition, lines) {
+            var totalTextOffset = 0;
+            for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+                var currentLine = lines[lineIndex];
+                var currentLineLength = currentLine.length;
+                var currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
+                if (totalTextOffset <= caretPosition && caretPosition <= currentLineUpperBoundOffset) {
+                    return lineIndex;
+                }
+                totalTextOffset = currentLineUpperBoundOffset;
+            }
+            return -1;
         }
     };
 })();

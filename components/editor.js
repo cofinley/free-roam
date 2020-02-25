@@ -44,8 +44,9 @@
                 }
                 if (this.keyCodes.LEFT_BRACKET === key)
                     this.handleAutocomplete();
-                else if (this.keyCodes.ARROWS.includes(key))
-                    this.handleArrowKeys(key, e);
+                else if (this.keyCodes.ARROWS.includes(key)) {
+                    return this.handleArrowKeys(key, e);
+                }
             }
             return true;
         },
@@ -70,59 +71,62 @@
         handleArrowKeys: function(key, e) {
             var self = this;
             var node = e.target;
-            var startingCaretPos = node.selectionEnd;
-            setTimeout(function() {
-                var endingCaretPos = node.selectionEnd;
-                switch (key) {
-                    case self.keyCodes.UP_ARROW:
-                        if (0 === endingCaretPos) {
-                            // Move up to the previous node if there is one, maintain current caret position
-                            var $prevNode = $(node).prev(self.renderedSelector);
-                            if ($prevNode.length) {
-                                var startingCaretLeftCoordinate = getCaretCoordinates(node, startingCaretPos).left;
-                                var editorLines = fr.utils.getWrappedLines($prevNode);
-                                var lineToFocus = editorLines[editorLines.length - 1];
-                                var caretPosition = Math.min(startingCaretPos, lineToFocus.length);
-                                self.switchToEditor($prevNode[0], caretPosition, startingCaretLeftCoordinate);
-                            }
+            var currentEditorLines = fr.utils.getWrappedLines($(node));
+            var currentCaretPos = node.selectionEnd;
+            var currentLineIndex = fr.utils.getCurrentLineIndex(currentCaretPos, currentEditorLines);
+            switch (key) {
+                case self.keyCodes.UP_ARROW:
+                    if (0 === currentLineIndex) {
+                        // Move up to the previous node if there is one, maintain current caret position
+                        var $prevNode = $(node).prev(self.renderedSelector);
+                        if ($prevNode.length) {
+                            var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
+                            var editorLines = fr.utils.getWrappedLines($prevNode);
+                            var lineToFocus = editorLines[editorLines.length - 1];
+                            var caretPosition = Math.min(currentCaretPos, lineToFocus.length);
+                            self.switchToEditor($prevNode[0], caretPosition, startingCaretLeftCoordinate);
+                            return false;
                         }
-                        break;
-                    case self.keyCodes.DOWN_ARROW:
-                        if ($(node).val().trim().length === endingCaretPos) {
-                            // Move down if possible, maintain current caret position
-                            var $nextNode = $(node).next(self.renderedSelector);
-                            if ($nextNode.length) {
-                                var startingCaretLeftCoordinate = getCaretCoordinates(node, startingCaretPos).left;
-                                var editorLines = fr.utils.getWrappedLines($nextNode);
-                                var lineToFocus = editorLines[0];
-                                var caretPosition = Math.min(startingCaretPos, lineToFocus.length - 1);
-                                self.switchToEditor($nextNode[0], caretPosition, startingCaretLeftCoordinate);
-                            }
+                        return true;
+                    }
+                    break;
+                case self.keyCodes.DOWN_ARROW:
+                    if (currentEditorLines.length - 1 === currentLineIndex) {
+                        // Move down if possible, maintain current caret position
+                        var $nextNode = $(node).next(self.renderedSelector);
+                        if ($nextNode.length) {
+                            var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
+                            var editorLines = fr.utils.getWrappedLines($nextNode);
+                            var lineToFocus = editorLines[0];
+                            var caretPosition = Math.min(currentCaretPos, lineToFocus.length - 1);
+                            self.switchToEditor($nextNode[0], caretPosition, startingCaretLeftCoordinate);
+                            return false;
                         }
-                        break;
-                    case self.keyCodes.RIGHT_ARROW:
-                        if ($(node).val().trim().length === startingCaretPos) {
-                            // Move down if possible, move caret to beginning
-                            var $nextNode = $(node).next(self.renderedSelector);
-                            if ($nextNode.length) {
-                                self.switchToEditor($nextNode[0], 0);
-                            }
+                        return true;
+                    }
+                    break;
+                case self.keyCodes.RIGHT_ARROW:
+                    if ($(node).val().trim().length === currentCaretPos) {
+                        // Move down if possible, move caret to beginning
+                        var $nextNode = $(node).next(self.renderedSelector);
+                        if ($nextNode.length) {
+                            self.switchToEditor($nextNode[0], 0);
                         }
-                        break;
-                    case self.keyCodes.LEFT_ARROW:
-                        if (0 === startingCaretPos) {
-                            // Move up if possible, move to caret to end
-                            var $prevNode = $(node).prev(self.renderedSelector);
-                            if ($prevNode.length) {
-                                self.switchToEditor($prevNode[0], $prevNode.text().trim().length);
-                            }
+                    }
+                    break;
+                case self.keyCodes.LEFT_ARROW:
+                    if (0 === currentCaretPos) {
+                        // Move up if possible, move to caret to end
+                        var $prevNode = $(node).prev(self.renderedSelector);
+                        if ($prevNode.length) {
+                            self.switchToEditor($prevNode[0], $prevNode.text().trim().length);
                         }
-                        break;
-                    default:
-                        break;
-                }
-            }, 0);
-
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return true;
         },
 
         watchClicks: function() {
@@ -146,7 +150,6 @@
             $textArea.val(value);
 
             setTimeout(function() {
-                $textArea.focus();
                 $textArea.textareaAutoSize();
                 $textArea.height(height);
 
@@ -157,6 +160,7 @@
                     caretPosition += caretOffset;
                 }
                 $textArea[0].setSelectionRange(caretPosition, caretPosition);
+                $textArea.focus();
             }.bind(this), 0);
         },
 
