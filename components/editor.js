@@ -71,7 +71,7 @@
         handleArrowKeys: function(key, e) {
             var self = this;
             var node = e.target;
-            var currentEditorLines = fr.utils.getWrappedLines($(node));
+            var currentEditorLines = fr.utils.getLines($(node));
             var currentCaretPos = node.selectionEnd;
             var currentLineIndex = fr.utils.getCurrentLineIndex(currentCaretPos, currentEditorLines);
             switch (key) {
@@ -81,9 +81,10 @@
                         var $prevNode = $(node).prev(self.renderedSelector);
                         if ($prevNode.length) {
                             var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
-                            var editorLines = fr.utils.getWrappedLines($prevNode);
+                            var editorLines = fr.utils.getLines($prevNode);
                             var lineToFocus = editorLines[editorLines.length - 1];
-                            var caretPosition = Math.min(currentCaretPos, lineToFocus.length);
+                            var lengthUpToLastLine = editorLines.slice(0, editorLines.length - 1).join(" ").length;
+                            var caretPosition = Math.min(lengthUpToLastLine + currentCaretPos, lengthUpToLastLine + lineToFocus.length);
                             self.switchToEditor($prevNode[0], caretPosition, startingCaretLeftCoordinate);
                             return false;
                         }
@@ -96,7 +97,7 @@
                         var $nextNode = $(node).next(self.renderedSelector);
                         if ($nextNode.length) {
                             var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
-                            var editorLines = fr.utils.getWrappedLines($nextNode);
+                            var editorLines = fr.utils.getLines($nextNode);
                             var lineToFocus = editorLines[0];
                             var caretPosition = Math.min(currentCaretPos, lineToFocus.length - 1);
                             self.switchToEditor($nextNode[0], caretPosition, startingCaretLeftCoordinate);
