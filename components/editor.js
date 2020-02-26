@@ -62,7 +62,7 @@
         },
 
         handleEnterKey: function(node) {
-            var $newLineTextArea = this.createNewEditor()
+            this.createNewEditor()
                 .appendTo($(node).parent())
                 .focus()
                 .textareaAutoSize();
@@ -73,17 +73,17 @@
             var node = e.target;
             var currentEditorLines = fr.utils.getLines($(node));
             var currentCaretPos = node.selectionEnd;
-            var currentLineIndex = fr.utils.getCurrentLineIndex(currentCaretPos, currentEditorLines);
+            var currentLineInfo = fr.utils.getCurrentLineInfo(currentCaretPos, currentEditorLines);
             switch (key) {
                 case self.keyCodes.UP_ARROW:
-                    if (0 === currentLineIndex) {
+                    if (0 === currentLineInfo.lineIndex) {
                         // Move up to the previous node if there is one, maintain current caret position
                         var $prevNode = $(node).prev(self.renderedSelector);
                         if ($prevNode.length) {
                             var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
                             var editorLines = fr.utils.getLines($prevNode);
                             var lineToFocus = editorLines[editorLines.length - 1];
-                            var lengthUpToLastLine = editorLines.slice(0, editorLines.length - 1).join(" ").length;
+                            var lengthUpToLastLine = editorLines.slice(0, editorLines.length - 1).join(" ").length + 1;
                             var caretPosition = Math.min(lengthUpToLastLine + currentCaretPos, lengthUpToLastLine + lineToFocus.length);
                             self.switchToEditor($prevNode[0], caretPosition, startingCaretLeftCoordinate);
                             return false;
@@ -92,14 +92,14 @@
                     }
                     break;
                 case self.keyCodes.DOWN_ARROW:
-                    if (currentEditorLines.length - 1 === currentLineIndex) {
+                    if (currentEditorLines.length - 1 === currentLineInfo.lineIndex) {
                         // Move down if possible, maintain current caret position
                         var $nextNode = $(node).next(self.renderedSelector);
                         if ($nextNode.length) {
                             var startingCaretLeftCoordinate = getCaretCoordinates(node, currentCaretPos).left;
                             var editorLines = fr.utils.getLines($nextNode);
                             var lineToFocus = editorLines[0];
-                            var caretPosition = Math.min(currentCaretPos, lineToFocus.length - 1);
+                            var caretPosition = Math.min(currentLineInfo.relativeCaretPos, lineToFocus.length);
                             self.switchToEditor($nextNode[0], caretPosition, startingCaretLeftCoordinate);
                             return false;
                         }
@@ -157,7 +157,7 @@
                 caretPosition = undefined !== caretPosition ? caretPosition : $textArea.val().trim().length;
                 if (previousCaretLeftCoordinate) {
                     var newCaretLeftCoordinate = getCaretCoordinates($textArea[0], caretPosition).left;
-                    var caretOffset = this.findClosestCaretOffsetMatch(previousCaretLeftCoordinate, caretPosition, newCaretLeftCoordinate, $textArea[0]);
+                    var caretOffset = this.fineTuneCaretPosition(previousCaretLeftCoordinate, newCaretLeftCoordinate, caretPosition, $textArea[0]);
                     caretPosition += caretOffset;
                 }
                 $textArea[0].setSelectionRange(caretPosition, caretPosition);
@@ -165,21 +165,20 @@
             }.bind(this), 0);
         },
 
-        findClosestCaretOffsetMatch: function(previousCaretLeftCoordinate, newCaretPosition, newCaretLeftCoordinate, node) {
-            var diff = Math.abs(previousCaretLeftCoordinate - newCaretLeftCoordinate);
-            if (0 === diff) {
-                return 0;
+        fineTuneCaretPosition: function(prevLeft, newLeft, currCaretPos, node) {
+            var range = 5;
+            var minDiff = Math.abs(prevLeft - newLeft);
+            var currCaretOffset = 0;
+
+            for (var offset = -range; offset <= range; offset++) {
+                var left = getCaretCoordinates(node, currCaretPos + offset).left;
+                var diff = Math.abs(prevLeft - left);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    currCaretOffset = offset;
+                }
             }
-            var onePositionToTheLeft = getCaretCoordinates(node, newCaretPosition - 1).left;
-            var leftDiff = Math.abs(previousCaretLeftCoordinate - onePositionToTheLeft);
-            var onePositionToTheRight = getCaretCoordinates(node, newCaretPosition + 1).left;
-            var rightDiff = Math.abs(previousCaretLeftCoordinate - onePositionToTheRight);
-            if (leftDiff < rightDiff && leftDiff < diff) {
-                return -1;
-            } else if (rightDiff < leftDiff && rightDiff < diff) {
-                return 1;
-            }
-            return 0;
+            return currCaretOffset;
         },
 
         switchToRendered: function(nodeToRender) {

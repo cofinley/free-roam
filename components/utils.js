@@ -82,7 +82,7 @@
             var temp = $("<div/>")
                 .css({
                     "position": "absolute",
-                    // "left": "-9999px",
+                    "left": "-9999px",
                 })
                 .appendTo(body)
                 .append(clone);
@@ -109,14 +109,17 @@
             return lines;
         },
 
-        getCurrentLineIndex: function(caretPosition, lines) {
+        getCurrentLineInfo: function(caretPosition, lines) {
             var totalTextOffset = 0;
             for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
                 var currentLine = lines[lineIndex];
                 var currentLineLength = currentLine.length;
                 var currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
                 if (totalTextOffset <= caretPosition && caretPosition <= currentLineUpperBoundOffset) {
-                    return lineIndex;
+                    return {
+                        relativeCaretPos: caretPosition - totalTextOffset - 3,
+                        lineIndex: lineIndex
+                    }
                 }
                 totalTextOffset = currentLineUpperBoundOffset;
             }
