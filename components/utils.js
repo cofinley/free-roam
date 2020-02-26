@@ -76,7 +76,7 @@
             var clone = $node[0].cloneNode(true);
             if ("TEXTAREA" === clone.nodeName) {
                 var plainText = $(clone).val();
-                var parsedHtml = fr.parser.linkBracketedText(plainText);
+                var parsedHtml = fr.parser.renderHtml(plainText);
                 clone = $(`<div class='line'>` + parsedHtml + "</div>")[0];
             }
             var temp = $("<div/>")
@@ -111,19 +111,25 @@
 
         getCurrentLineInfo: function(caretPosition, lines) {
             var totalTextOffset = 0;
+            var currentLine;
+            var currentLineLength;
+            var currentLineUpperBoundOffset;
             for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-                var currentLine = lines[lineIndex];
-                var currentLineLength = currentLine.length;
-                var currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
+                currentLine = lines[lineIndex];
+                currentLineLength = currentLine.length;
+                currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
                 if (totalTextOffset <= caretPosition && caretPosition <= currentLineUpperBoundOffset) {
                     return {
                         relativeCaretPos: caretPosition - totalTextOffset,
                         lineIndex: lineIndex
-                    }
+                    };
                 }
                 totalTextOffset = currentLineUpperBoundOffset;
             }
-            return -1;
+            return {
+                relativeCaretPos: currentLineLength,
+                lineIndex: lines.length - 1
+            };
         }
     };
 })();

@@ -156,7 +156,7 @@
                 .appendTo(body)
                 .append($textArea);
 
-            var value = fr.parser.parseLinkOnFocus(nodeToEdit.innerHTML.trim());
+            var value = fr.parser.parseHtml(nodeToEdit.innerHTML.trim());
             $textArea.val(value);
 
             setTimeout(function() {
@@ -194,7 +194,7 @@
 
         switchToRendered: function(nodeToRender) {
             var plainText = $(nodeToRender).val();
-            var parsedHtml = fr.parser.linkBracketedText(plainText);
+            var parsedHtml = fr.parser.renderHtml(plainText);
             $(nodeToRender).replaceWith(`<div class='${this.renderedClass}'>` + parsedHtml + "</div>")
             fr.page.save();
         },

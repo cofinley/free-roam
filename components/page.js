@@ -21,7 +21,7 @@
             page.content.split("\n").forEach(function(line) {
                 html += "<div class='line'>" + line + "</div>";
             });
-            var linkedHtml = fr.parser.linkBracketedText(html);
+            var linkedHtml = fr.parser.renderHtml(html);
             $("#title").text(page.title);
             $("#text").html(linkedHtml);
             $("#links").html("");
@@ -32,8 +32,15 @@
 
         save: function() {
             if (this.current) {
-                var currentInputText = $("#text").text();
-                this.current.content = currentInputText;
+                var lines = [];
+                $("#text").children().each(function(i, child) {
+                    if ("TEXTAREA" === child.nodeName) {
+                        lines.push($(child).val());
+                    } else {
+                        lines.push(fr.parser.parseHtml($(child).text()));
+                    }
+                });
+                this.current.content = lines.join("\n");
             }
         },
 

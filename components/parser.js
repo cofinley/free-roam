@@ -3,7 +3,7 @@
     var fr = window.fr;
 
     fr.parser = {
-        parseLinkOnFocus: function(html) {
+        parseHtml: function(html) {
             var pat = /<span.*?>(.*?)<*.span>/g;
             var plainText = html.replace(pat, function(match, bracketedText) {
                 return bracketedText;
@@ -11,7 +11,7 @@
             return plainText;
         },
 
-        linkBracketedText: function(html) {
+        renderHtml: function(html) {
             var pat = /\[\[([^\[\]]*)\]\]/g;
             var linkedHtml = html.replace(pat, function(match, textInsideBrackets) {
                 if (!(textInsideBrackets in fr.page.pages)) {
