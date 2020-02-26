@@ -63,7 +63,8 @@ textarea {
     outline: none;
     overflow: hidden;
     overflow-wrap: break-word;
-    margin: -2px 0 0 -2px;
+    margin: 10px 0;
+    padding: 0;
 }
 
 #popup {
@@ -93,6 +94,7 @@ textarea {
     min-height: 24px;
     overflow: hidden;
     overflow-wrap: break-word;
+    margin: 10px 0;
 }
 
 .link {

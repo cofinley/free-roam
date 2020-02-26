@@ -63,25 +63,63 @@
         getWrappedLines: function($node) {
             var text = "TEXTAREA" === $node[0].nodeName ? $node.val() : $node.text();
             var numLines = Math.ceil(this.getTextWidth($node) / $node.width());
-            var numCharsPerLine = text.length / numLines;
+            var numCharsPerLine = Math.floor(text.length / numLines);
             var lines = text.split(
                 new RegExp(`(?![^\\n]{1,${numCharsPerLine}}$)([^\\n]{1,${numCharsPerLine}})\\s`, 'g')
             )
-            if (lines.length > 1 && lines[0] === "") {
-                return lines.splice(1);
-            } else {
-                return lines;
-            }
+            return lines.filter(function(line) {
+                return "" !== line;
+            });
         },
 
-        getCurrentLineIndex: function(caretPosition, lines) {
+        getLines: function($node) {
+            var clone = $node[0].cloneNode(true);
+            if ("TEXTAREA" === clone.nodeName) {
+                var plainText = $(clone).val();
+                var parsedHtml = fr.parser.linkBracketedText(plainText);
+                clone = $(`<div class='line'>` + parsedHtml + "</div>")[0];
+            }
+            var temp = $("<div/>")
+                .css({
+                    "position": "absolute",
+                    "left": "-9999px",
+                })
+                .appendTo(body)
+                .append(clone);
+            $(clone).width($node.width());
+
+            var current = clone;
+            var text = $(current).text();
+            var words = text.split(' ');
+            current.innerHTML = words[0];
+            var height = current.offsetHeight;
+            var lines = [];
+            var list = [words[0]];
+            for(var i = 1; i < words.length; i++){
+                current.innerHTML += ' ' + words[i];
+                if(current.offsetHeight > height){
+                    height = current.offsetHeight;
+                    lines.push(list.join(" "));
+                    list = [];
+                }
+                list.push(words[i]);
+            }
+            lines.push(list.join(" "));
+            temp.remove();
+            return lines;
+        },
+
+        getCurrentLineInfo: function(caretPosition, lines) {
             var totalTextOffset = 0;
             for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
                 var currentLine = lines[lineIndex];
                 var currentLineLength = currentLine.length;
                 var currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
                 if (totalTextOffset <= caretPosition && caretPosition <= currentLineUpperBoundOffset) {
-                    return lineIndex;
+                    return {
+                        relativeCaretPos: caretPosition - totalTextOffset,
+                        lineIndex: lineIndex
+                    }
                 }
                 totalTextOffset = currentLineUpperBoundOffset;
             }
