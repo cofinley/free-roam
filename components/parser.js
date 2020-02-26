@@ -19,9 +19,13 @@
                 }
                 var page = fr.page.pages[textInsideBrackets];
                 page.links.add(fr.page.current.title);
-                return `<span class='link'>${match}</span>`;
+                return `<span class='${fr.editor.linkClass}'>${match}</span>`;
             });
             return linkedHtml;
+        },
+
+        renderLine: function(plainTextLine) {
+            return `<div class="${fr.editor.renderedClass}">${this.renderHtml(plainTextLine)}</div>`;
         }
     };
 })();

@@ -20,6 +20,7 @@
         renderedSelector: ".line",
         editClass: "line-edit",
         editSelector: ".line-edit",
+        linkClass: "link",
         linkSelector: ".link",
 
         init: function() {
@@ -194,8 +195,8 @@
 
         switchToRendered: function(nodeToRender) {
             var plainText = $(nodeToRender).val();
-            var parsedHtml = fr.parser.renderHtml(plainText);
-            $(nodeToRender).replaceWith(`<div class='${this.renderedClass}'>` + parsedHtml + "</div>")
+            var renderedHtml = fr.parser.renderLine(plainText);
+            $(nodeToRender).replaceWith(renderedHtml)
             fr.page.save();
         },
 
@@ -207,10 +208,19 @@
         },
 
         watchLinkClicks: function() {
+            $(document).on("click", this.linkSelector, function(e) { return false; });
             $(document).on("mousedown", this.linkSelector, function(e) {
                 e.stopImmediatePropagation();
+                var openInSideBar = e.originalEvent.shiftKey;
+                var inSideBar = $(this).parents("#right-sidebar").length > 0;
                 var pageTitle = $(this).text().replace("[[", '').replace("]]", '');
-                fr.page.load(pageTitle);
+                if (!inSideBar && openInSideBar) {
+                    fr.rightSidebar.openPage(pageTitle);
+                } else {
+                    fr.page.load(pageTitle);
+                }
+                e.preventDefault();
+                return false;
             });
         },
 

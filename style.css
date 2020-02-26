@@ -18,6 +18,7 @@
     flex: 1 0 35%;
     max-width: 30vw;
     flex-direction: column;
+    background-color: #24272b;
 }
 
 #right-sidebar.active {
@@ -43,7 +44,8 @@
 }
 
 #content {
-    padding: 7vh 25vw;
+    /* padding: 7vh 25vw; */
+    padding: 5% 25%;
 }
 
 
@@ -108,4 +110,33 @@ textarea {
 
 #links {
     margin-top: 100px;
+}
+
+.sidebar-page-header {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-page-toggle {
+    font-size: 36px;
+    margin-right: 5px;
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.sidebar-page-title {
+    margin: 7px auto 0 0;
+}
+
+.sidebar-page-close {
+    margin: 0 0 3px 10px;
+    color: white !important;
+}
+
+.sidebar-page-ref-button {
+    margin-top: 3px;
+}
+
+.sidebar-page-block {
+    padding: 0 20px;
 }

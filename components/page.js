@@ -7,23 +7,27 @@
             "First Page": {
                 id: "123456",
                 title: "First Page",
-                content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
+                content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. [[Second Page]]",
                 links: new Set()
             }
         },
 
         current: null,
 
+        generateHtml(page) {
+            var html = "";
+            page.content.split("\n").forEach(function(line) {
+                html += fr.parser.renderLine(line);
+            });
+            return html;
+        },
+
         load: function(pageTitle) {
             var page = this.pages[pageTitle];
             this.current = page;
-            var html = "";
-            page.content.split("\n").forEach(function(line) {
-                html += "<div class='line'>" + line + "</div>";
-            });
-            var linkedHtml = fr.parser.renderHtml(html);
+            var html = this.generateHtml(page);
             $("#title").text(page.title);
-            $("#text").html(linkedHtml);
+            $("#text").html(html);
             $("#links").html("");
             if (page.links.size) {
                 $("#links").html(fr.refs.generateLinked(page));

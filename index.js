@@ -3,6 +3,7 @@ function init() {
 
     loadFirstPage();
     fr.leftSidebar.init();
+    fr.rightSidebar.init();
     fr.editor.init();
 }
 

@@ -76,8 +76,8 @@
             var clone = $node[0].cloneNode(true);
             if ("TEXTAREA" === clone.nodeName) {
                 var plainText = $(clone).val();
-                var parsedHtml = fr.parser.renderHtml(plainText);
-                clone = $(`<div class='line'>` + parsedHtml + "</div>")[0];
+                var parsedHtml = fr.parser.renderLine(plainText);
+                clone = $(parsedHtml)[0];
             }
             var temp = $("<div/>")
                 .css({
