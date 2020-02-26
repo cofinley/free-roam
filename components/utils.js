@@ -117,7 +117,7 @@
                 var currentLineUpperBoundOffset = totalTextOffset + currentLineLength;
                 if (totalTextOffset <= caretPosition && caretPosition <= currentLineUpperBoundOffset) {
                     return {
-                        relativeCaretPos: caretPosition - totalTextOffset - 3,
+                        relativeCaretPos: caretPosition - totalTextOffset,
                         lineIndex: lineIndex
                     }
                 }

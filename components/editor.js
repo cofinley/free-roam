@@ -144,8 +144,17 @@
         switchToEditor: function(nodeToEdit, caretPosition, previousCaretLeftCoordinate) {
             var self = this;
             var height = $(nodeToEdit).height();
+            var width = $(nodeToEdit).width();
             var $textArea = this.createNewEditor()
-                .replaceAll($(nodeToEdit));
+                .width(width);
+
+            var $temp = $("<div/>")
+                .css({
+                    "position": "absolute",
+                    "left": "-9999px",
+                })
+                .appendTo(body)
+                .append($textArea);
 
             var value = fr.parser.parseLinkOnFocus(nodeToEdit.innerHTML.trim());
             $textArea.val(value);
@@ -161,7 +170,9 @@
                     caretPosition += caretOffset;
                 }
                 $textArea[0].setSelectionRange(caretPosition, caretPosition);
+                $textArea.replaceAll($(nodeToEdit));
                 $textArea.focus();
+                $temp.remove();
             }.bind(this), 0);
         },
 
