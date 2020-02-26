@@ -3,6 +3,7 @@
     var fr = window.fr;
 
     fr.parser = {
+
         parseHtml: function(html) {
             var pat = /<span.*?>(.*?)<*.span>/g;
             var plainText = html.replace(pat, function(match, bracketedText) {

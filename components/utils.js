@@ -3,6 +3,7 @@
     var fr = window.fr;
 
     fr.utils = {
+
         insertAtCaret: function(txtarea, text) {
             if (!txtarea) {
                 return;

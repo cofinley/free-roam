@@ -3,6 +3,7 @@
     var fr = window.fr;
 
     fr.rightSidebar = {
+
         pagesOpen: [],
         toggleClass: "sidebar-page-toggle",
         toggleSelector: ".sidebar-page-toggle",

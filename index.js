@@ -4,6 +4,7 @@ function init() {
     loadFirstPage();
     fr.leftSidebar.init();
     fr.rightSidebar.init();
+    fr.autocomplete.init();
     fr.editor.init();
 }
 

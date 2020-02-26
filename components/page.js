@@ -3,6 +3,7 @@
     var fr = window.fr;
 
     fr.page = {
+
         pages: {
             "First Page": {
                 id: "123456",
@@ -13,6 +14,10 @@
         },
 
         current: null,
+
+        getPageTitles: function() {
+            return Object.keys(this.pages);
+        },
 
         generateHtml(page) {
             var html = "";

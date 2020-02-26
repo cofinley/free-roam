@@ -3,6 +3,7 @@
     var fr = window.fr;
 
     fr.editor = {
+
         keyCodes: {
             LEFT_BRACKET: 219,
             RIGHT_BRACKET: 221,
@@ -43,23 +44,11 @@
                     this.handleEnterKey(e.target);
                     return false;
                 }
-                if (this.keyCodes.LEFT_BRACKET === key)
-                    this.handleAutocomplete();
-                else if (this.keyCodes.ARROWS.includes(key)) {
+                if (this.keyCodes.ARROWS.includes(key)) {
                     return this.handleArrowKeys(key, e);
                 }
             }
             return true;
-        },
-
-        handleAutocomplete: function() {
-            if (this.lastCharWasOpenBracket) {
-                fr.autocomplete.toggleLinkDialog(true);
-                this.lastCharWasOpenBracket = false;
-            } else {
-                fr.autocomplete.toggleLinkDialog(false);
-                this.lastCharWasOpenBracket = true;
-            }
         },
 
         handleEnterKey: function(node) {
@@ -137,13 +126,14 @@
         },
 
         createNewEditor: function() {
-            return $("<textarea/>")
+            var $editor = $("<textarea/>")
                 .addClass(this.editClass)
                 .css("min-height", 24);
+            fr.autocomplete.listener.attach($editor[0]);
+            return $editor;
         },
 
         switchToEditor: function(nodeToEdit, caretPosition, previousCaretLeftCoordinate) {
-            var self = this;
             var height = $(nodeToEdit).height();
             var width = $(nodeToEdit).width();
             var $textArea = this.createNewEditor()
