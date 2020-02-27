@@ -61,18 +61,6 @@
             return metrics.width;
         },
 
-        getWrappedLines: function($node) {
-            var text = "TEXTAREA" === $node[0].nodeName ? $node.val() : $node.text();
-            var numLines = Math.ceil(this.getTextWidth($node) / $node.width());
-            var numCharsPerLine = Math.floor(text.length / numLines);
-            var lines = text.split(
-                new RegExp(`(?![^\\n]{1,${numCharsPerLine}}$)([^\\n]{1,${numCharsPerLine}})\\s`, 'g')
-            )
-            return lines.filter(function(line) {
-                return "" !== line;
-            });
-        },
-
         getLines: function($node) {
             var clone = $node[0].cloneNode(true);
             if ("TEXTAREA" === clone.nodeName) {
@@ -131,6 +119,43 @@
                 relativeCaretPos: currentLineLength,
                 lineIndex: lines.length - 1
             };
+        },
+
+        translateCursorToCaret: function(e) {
+            var node = e.target;
+            var width = $(node).width();
+
+            var cursorPosX = e.originalEvent.offsetX;
+            var cursorPosY = e.originalEvent.offsetY;
+
+            var html = $(node).text();
+            var plainText = fr.parser.parseHtml(html);
+            var $clone = fr.editor.createNewEditor()
+                .val(plainText)
+                .width(width);
+
+            var temp = $("<div/>")
+                .css({
+                    "position": "absolute",
+                    "left": "-9999px",
+                })
+                .appendTo(body)
+                .append($clone);
+
+            var minDistance = 10000;
+            var translatedCaretPos = 0;
+            for (var caretPos = 0; caretPos <= $(node).text().length; caretPos++) {
+                var coordinates = getCaretCoordinates($clone[0], caretPos);
+                var x = coordinates.left;
+                var y = coordinates.top;
+                var distance = Math.sqrt(Math.pow((x-cursorPosX), 2) + Math.pow((y-cursorPosY), 2));
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    translatedCaretPos = caretPos;
+                }
+            }
+            temp.remove();
+            return translatedCaretPos;
         }
     };
 })();

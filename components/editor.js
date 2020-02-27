@@ -12,7 +12,9 @@
             RIGHT_ARROW: 39,
             DOWN_ARROW: 40,
             ARROWS: [37, 38, 39, 40],
-            ENTER: 13
+            ENTER: 13,
+            BACKSPACE: 8,
+            DELETE: 46
         },
 
         lastCharWasOpenBracket: false,
@@ -40,22 +42,68 @@
         handleKeyDown: function(e) {
             if (e.originalEvent.keyCode) {
                 var key = e.originalEvent.keyCode;
-                if (this.keyCodes.ENTER === key) {
-                    this.handleEnterKey(e.target);
-                    return false;
-                }
-                if (this.keyCodes.ARROWS.includes(key)) {
-                    return this.handleArrowKeys(key, e);
+                switch (key) {
+                    case this.keyCodes.ENTER:
+                        this.handleEnterKey(e.target);
+                        return false;
+                    case this.keyCodes.BACKSPACE:
+                        return this.handleBackspace(e.target);
+                    case this.keyCodes.DELETE:
+                        return this.handleDelete(e.target);
+                    case this.keyCodes.UP_ARROW:
+                    case this.keyCodes.DOWN_ARROW:
+                    case this.keyCodes.LEFT_ARROW:
+                    case this.keyCodes.RIGHT_ARROW:
+                        return this.handleArrowKeys(key, e);
+                    default:
+                        break;
                 }
             }
             return true;
         },
 
         handleEnterKey: function(node) {
-            this.createNewEditor()
+            var currentCaretPos = node.selectionEnd;
+            var textToKeep = $(node).val().substring(0, currentCaretPos);
+            var textToYank = $(node).val().substring(currentCaretPos);
+            $(node).val(textToKeep);
+            var $editor = this.createNewEditor()
+                .val(textToYank)
                 .appendTo($(node).parent())
                 .focus()
                 .textareaAutoSize();
+            $editor[0].setSelectionRange(0, 0);
+        },
+
+        handleBackspace: function(node) {
+            var currentCaretPos = node.selectionEnd;
+            if (0 === currentCaretPos) {
+                var $prevNode = $(node).prev(self.renderedSelector);
+                if ($prevNode.length) {
+                    var textToAppend = $(node).val();
+                    var newCaretPosition = $prevNode.text().trim().length;
+                    $prevNode.text($prevNode.text() + textToAppend);
+                    this.switchToEditor($prevNode[0], newCaretPosition);
+                    $(node).remove();
+                    return false;
+                }
+            }
+            return true;
+        },
+
+        handleDelete: function(node) {
+            var currentCaretPos = node.selectionEnd;
+            if ($(node).val().length === currentCaretPos) {
+                var $nextNode = $(node).next(self.renderedSelector);
+                if ($nextNode.length) {
+                    var textToAppend = $nextNode.text();
+                    $(node).val($(node).val() + textToAppend);
+                    $nextNode.remove();
+                    node.setSelectionRange(currentCaretPos, currentCaretPos);
+                    return false;
+                }
+            }
+            return true;
         },
 
         handleArrowKeys: function(key, e) {
@@ -193,7 +241,8 @@
         watchFocusClicks: function() {
             var self = this;
             $(document).on("mousedown", this.renderedSelector, function(e) {
-               self.switchToEditor(e.target);
+                var caretPos = fr.utils.translateCursorToCaret(e);
+               self.switchToEditor(e.target, caretPos);
             });
         },
 
