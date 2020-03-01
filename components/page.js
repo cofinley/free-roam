@@ -19,10 +19,11 @@
             return Object.keys(this.pages);
         },
 
-        generateHtml(page) {
+        generateHtml(page, readOnly) {
             var html = "";
+            readOnly = undefined !== readOnly ? readOnly : false;
             page.content.split("\n").forEach(function(line) {
-                html += fr.parser.renderLine(line);
+                html += fr.parser.renderLine(line, readOnly);
             });
             return html;
         },
@@ -98,6 +99,18 @@
                 .map(function(page) {
                     return page.title;
                 });
+        },
+
+        searchForUnlinkedRefs: function(query) {
+            var pat = new RegExp(`[^\[\[](${query})(?!\]\])`, "gi");
+            return Object.values(this.pages)
+                .filter(function(page) {
+                    return page.content.search(pat) > -1;
+                })
+                .map(function(page) {
+                    return page.title;
+                });
+
         }
     };
 })();

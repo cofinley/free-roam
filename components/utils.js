@@ -128,7 +128,7 @@
             var cursorPosX = e.originalEvent.offsetX;
             var cursorPosY = e.originalEvent.offsetY;
 
-            var html = $(node).text();
+            var html = $(node).html();
             var plainText = fr.parser.parseHtml(html);
             var $clone = fr.editor.createNewEditor()
                 .val(plainText)

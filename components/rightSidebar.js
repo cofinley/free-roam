@@ -21,7 +21,7 @@
         openPage: function(pageTitle) {
             var page = fr.page.pages[pageTitle];
             this.pagesOpen.push(page);
-            var html = fr.page.generateHtml(page);
+            var html = fr.page.generateHtml(page, true);
             var $header = $("<div/>")
                 .addClass("sidebar-page-header");
             $("<span/>")

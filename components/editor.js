@@ -22,6 +22,7 @@
 
         renderedClass: "line",
         renderedSelector: ".line",
+        readOnlyClass: "line-readOnly",
         editClass: "line-edit",
         editSelector: ".line-edit",
         linkClass: "link",

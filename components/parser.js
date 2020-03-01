@@ -5,17 +5,51 @@
     fr.parser = {
 
         parseHtml: function(html) {
-            var pat = /<span.*?>(.*?)<*.span>/g;
-            var plainText = html.replace(pat, function(match, bracketedText) {
-                return bracketedText;
-            });
-            plainText = plainText.replace("&emsp;&emsp;", "\t");
+            html = this.parseLinks(html);
+            html = this.parseTabs(html);
+            html = this.parseBold(html);
+            html = this.parseItalics(html);
+            var plainText = html;
             return plainText;
         },
 
-        renderHtml: function(html) {
+        parseLinks: function(html) {
+            var pat = /<span.*?>([^<]*)<\/span>/g;
+            return html.replace(pat, function(match, bracketedText) {
+                return bracketedText;
+            });
+        },
+
+        parseTabs: function(html) {
+            return html.replace("&emsp;&emsp;", "\t");
+        },
+
+        parseBold: function(html) {
+            var pat = /<b\b.*?>([^<]*)<\/b>/g;
+            return html.replace(pat, function(match, boldText) {
+                return `**${boldText}**`;
+            });
+        },
+
+        parseItalics: function(html) {
+            var pat = /<i\b.*?>([^<]*)<\/i>/g;
+            return html.replace(pat, function(match, italicText) {
+                return `_${italicText}_`;
+            });
+        },
+
+        renderPlainText: function(plainText) {
+            plainText = this.renderLinks(plainText);
+            plainText = this.renderTabs(plainText);
+            plainText = this.renderBold(plainText);
+            plainText = this.renderItalics(plainText);
+            var html = plainText;
+            return html;
+        },
+
+        renderLinks: function(plainText) {
             var pat = /\[\[([^\[\]]*)\]\]/g;
-            var linkedHtml = html.replace(pat, function(match, textInsideBrackets) {
+            return plainText.replace(pat, function(match, textInsideBrackets) {
                 if (!(textInsideBrackets in fr.page.pages)) {
                     fr.page.new(textInsideBrackets);
                 }
@@ -23,16 +57,28 @@
                 page.links.add(fr.page.current.title);
                 return `<span class='${fr.editor.linkClass}'>${match}</span>`;
             });
-            linkedHtml = this.renderTabs(linkedHtml);
-            return linkedHtml;
         },
 
-        renderTabs: function(html) {
-            return html.replace("\t", "&emsp;&emsp;");
+        renderItalics: function(plainText) {
+            var pat = /_([^_]*)_/g;
+            return plainText.replace(pat, function(match, italicText) {
+                return `<i>${italicText}</i>`;
+            });
+        },
+        renderBold: function(plainText) {
+            var pat = /\*\*([^\*]*)\*\*/g;
+            return plainText.replace(pat, function(match, boldText) {
+                return `<b>${boldText}</b>`;
+            });
         },
 
-        renderLine: function(plainTextLine) {
-            return `<div class="${fr.editor.renderedClass}">${this.renderHtml(plainTextLine)}</div>`;
+        renderTabs: function(plainText) {
+            return plainText.replace("\t", "&emsp;&emsp;");
+        },
+
+        renderLine: function(plainTextLine, readOnly) {
+            var lineClass = readOnly ? fr.editor.readOnlyClass : fr.editor.renderedClass;
+            return `<div class="${lineClass}">${this.renderPlainText(plainTextLine)}</div>`;
         }
     };
 })();

@@ -99,6 +99,10 @@ textarea {
     margin: 10px 0;
 }
 
+.line-readOnly {
+    margin: 10px 0;
+}
+
 .link {
     color: lightskyblue;
     cursor: pointer;
