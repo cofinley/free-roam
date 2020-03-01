@@ -14,7 +14,8 @@
             ARROWS: [37, 38, 39, 40],
             ENTER: 13,
             BACKSPACE: 8,
-            DELETE: 46
+            DELETE: 46,
+            TAB: 9
         },
 
         lastCharWasOpenBracket: false,
@@ -55,6 +56,8 @@
                     case this.keyCodes.LEFT_ARROW:
                     case this.keyCodes.RIGHT_ARROW:
                         return this.handleArrowKeys(key, e);
+                    case this.keyCodes.TAB:
+                        return this.handleTab(e.target);
                     default:
                         break;
                 }
@@ -75,13 +78,20 @@
             $editor[0].setSelectionRange(0, 0);
         },
 
+        handleTab: function(node) {
+            var currentCaretPos = node.selectionEnd;
+            $(node).val("\t" + $(node).val());
+            node.setSelectionRange(currentCaretPos + 1, currentCaretPos + 1);
+            return false;
+        },
+
         handleBackspace: function(node) {
             var currentCaretPos = node.selectionEnd;
             if (0 === currentCaretPos) {
                 var $prevNode = $(node).prev(self.renderedSelector);
                 if ($prevNode.length) {
                     var textToAppend = $(node).val();
-                    var newCaretPosition = $prevNode.text().trim().length;
+                    var newCaretPosition = $prevNode.text().trimEnd().length;
                     $prevNode.text($prevNode.text() + textToAppend);
                     this.switchToEditor($prevNode[0], newCaretPosition);
                     $(node).remove();
@@ -145,7 +155,7 @@
                     }
                     break;
                 case self.keyCodes.RIGHT_ARROW:
-                    if ($(node).val().trim().length === currentCaretPos) {
+                    if ($(node).val().trimEnd().length === currentCaretPos) {
                         // Move down if possible, move caret to beginning
                         var $nextNode = $(node).next(self.renderedSelector);
                         if ($nextNode.length) {
@@ -158,7 +168,7 @@
                         // Move up if possible, move to caret to end
                         var $prevNode = $(node).prev(self.renderedSelector);
                         if ($prevNode.length) {
-                            self.switchToEditor($prevNode[0], $prevNode.text().trim().length);
+                            self.switchToEditor($prevNode[0], $prevNode.text().trimEnd().length);
                         }
                     }
                     break;
@@ -195,14 +205,14 @@
                 .appendTo(body)
                 .append($textArea);
 
-            var value = fr.parser.parseHtml(nodeToEdit.innerHTML.trim());
+            var value = fr.parser.parseHtml(nodeToEdit.innerHTML.trimEnd());
             $textArea.val(value);
 
             setTimeout(function() {
                 $textArea.textareaAutoSize();
                 $textArea.height(height);
 
-                caretPosition = undefined !== caretPosition ? caretPosition : $textArea.val().trim().length;
+                caretPosition = undefined !== caretPosition ? caretPosition : $textArea.val().trimEnd().length;
                 if (previousCaretLeftCoordinate) {
                     var newCaretLeftCoordinate = getCaretCoordinates($textArea[0], caretPosition).left;
                     var caretOffset = this.fineTuneCaretPosition(previousCaretLeftCoordinate, newCaretLeftCoordinate, caretPosition, $textArea[0]);

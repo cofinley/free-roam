@@ -155,6 +155,9 @@
                 }
             }
             temp.remove();
+            if ($(node).text().indexOf("\t") > -1) {
+                translatedCaretPos += 4;
+            }
             return translatedCaretPos;
         }
     };

@@ -34,9 +34,12 @@
             $("#title").text(page.title);
             $("#text").html(html);
             $("#links").html("");
+            var linkHtml = "";
             if (page.links.size) {
-                $("#links").html(fr.refs.generateLinked(page));
+                linkHtml += fr.refs.generateLinked(page);
             }
+            linkHtml += fr.refs.generateUnlinked(page);
+            $("#links").html(linkHtml);
         },
 
         save: function() {
@@ -84,6 +87,17 @@
                 }
             }
             return tempTitle;
+        },
+
+        search: function(query) {
+            var pat = new RegExp(`\\b${query}\\b`, "gi");
+            return Object.values(this.pages)
+                .filter(function(page) {
+                    return page.content.search(pat) > -1;
+                })
+                .map(function(page) {
+                    return page.title;
+                });
         }
     };
 })();

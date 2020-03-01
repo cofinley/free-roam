@@ -9,6 +9,7 @@
             var plainText = html.replace(pat, function(match, bracketedText) {
                 return bracketedText;
             });
+            plainText = plainText.replace("&emsp;&emsp;", "\t");
             return plainText;
         },
 
@@ -22,7 +23,12 @@
                 page.links.add(fr.page.current.title);
                 return `<span class='${fr.editor.linkClass}'>${match}</span>`;
             });
+            linkedHtml = this.renderTabs(linkedHtml);
             return linkedHtml;
+        },
+
+        renderTabs: function(html) {
+            return html.replace("\t", "&emsp;&emsp;");
         },
 
         renderLine: function(plainTextLine) {
