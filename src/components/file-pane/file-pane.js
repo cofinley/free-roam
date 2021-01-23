@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './file-pane.scss'
 
-class FilePane extends React.Component {
+export default class FilePane extends React.Component {
   render() {
     const pageListItems = Array.from(this.props.pages).map(([pageId, page]) => (
       <Link to={`/page/${pageId}`} key={pageId} className="list-group-item list-group-item-action bg-dark text-light">{page.text}</Link>
@@ -19,5 +19,3 @@ class FilePane extends React.Component {
     )
   }
 }
-
-export default FilePane

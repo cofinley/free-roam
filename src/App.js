@@ -9,7 +9,7 @@ import Editor from './components/editor/editor'
 import ViewPane from './components/view-pane/view-pane'
 import Page from './models/page'
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -59,5 +59,3 @@ class App extends React.Component {
     )
   }
 }
-
-export default App

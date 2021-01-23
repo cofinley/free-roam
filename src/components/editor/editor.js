@@ -2,7 +2,7 @@ import React from 'react'
 
 import './editor.scss'
 
-class Editor extends React.Component {
+export default class Editor extends React.Component {
   render() {
     const blockLoaded = this.props.block !== undefined
     if (!blockLoaded) {
@@ -29,5 +29,3 @@ class Editor extends React.Component {
     )
   }
 }
-
-export default Editor

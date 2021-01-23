@@ -4,7 +4,7 @@ import './view-pane.scss'
 
 import Editor from './../editor/editor'
 
-class ViewPane extends React.Component {
+export default class ViewPane extends React.Component {
   render() {
     const blocks = this.props.otherBlocks.map(block => (
       <div>
@@ -19,5 +19,3 @@ class ViewPane extends React.Component {
     )
   }
 }
-
-export default ViewPane
