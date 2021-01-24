@@ -7,53 +7,104 @@ import Main from './components/main/main'
 import FilePane from './components/file-pane/file-pane'
 import Editor from './components/editor/editor'
 import ViewPane from './components/view-pane/view-pane'
-import Page from './models/page'
+import Navbar from './components/navbar/navbar'
+import BlockModel from './models/block'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pages: new Map(),
-      otherBlocks: []
+      blocks: new Map(),
+      viewPaneBlocks: [],
+      searchResults: []
     }
   }
 
-  createPage = () => {
-    const page = new Page()
+  createPageClick = event => {
+    return this.createPage()
+  }
+
+  createPage = text => {
+    const pageBlock = new BlockModel({ text: text })
     this.setState((state, props) => ({
-      pages: new Map([
-        ...state.pages,
-        [page.id, page]
+      blocks: new Map([
+        ...state.blocks,
+        [pageBlock.id, pageBlock]
       ])
+    }))
+    return pageBlock
+  }
+
+  editBlock = (block, newText) => {
+    const updatedBlock = Object.assign({}, block)
+    updatedBlock.text = newText
+    this.setState((state, props) => ({
+      blocks: new Map(state.blocks).set(block.id, updatedBlock)
     }))
   }
 
+  search = event => {
+    this.setState({
+      searchResults: []
+    })
+    const query = event.target.value
+    if (!query) {
+      return
+    }
+    const searchResults = Array.from(this.state.blocks)
+      .map(([blockId, block]) => block)
+      .filter(block => block.text.indexOf(query) !== -1)
+    this.setState({
+      searchResults: searchResults
+    })
+  }
+
+  getOrCreate = blockText => {
+    const existingBlock = Array.from(this.state.blocks)
+      .map(([blockId, block]) => block)
+      .find(block => block.text === blockText)
+    if (!existingBlock) {
+      const newBlock = this.createPage(blockText)
+      return newBlock
+    }
+    return existingBlock
+  }
+
   render() {
+    const pages = Array.from(this.state.blocks)
+      .map(([blockId, block]) => block)
+      .filter(block => !block.parent)
     return (
-      <div className="App bg-dark">
+      <div className="App">
         <Router>
           <FilePane
-            pages={this.state.pages}
-            createPage={this.createPage}
+            pages={pages}
+            createPage={this.createPageClick}
           />
           <Main>
+            <Navbar
+              searchOrCreate={this.search}
+              searchResults={this.state.searchResults}
+            />
             <Route
               exact={true}
               path="/"
               render={() => (
-                <h1 className="text-light">Welcome</h1>
+                <h1>Welcome</h1>
               )}
             />
             <Route
               path="/page/:pageId"
               render={({ match }) => (
-                <Editor block={this.state.pages.get(match.params.pageId)}/>
+                <Editor
+                  block={this.state.blocks.get(match.params.pageId)}
+                  editBlock={this.editBlock}
+                  getOrCreate={this.getOrCreate}
+                />
               )}
             />
           </Main>
-          <ViewPane
-            otherBlocks={this.state.otherBlocks}
-          />
+          <ViewPane blocks={this.state.viewPaneBlocks}/>
         </Router>
       </div>
     )

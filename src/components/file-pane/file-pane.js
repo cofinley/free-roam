@@ -5,8 +5,8 @@ import './file-pane.scss'
 
 export default class FilePane extends React.Component {
   render() {
-    const pageListItems = Array.from(this.props.pages).map(([pageId, page]) => (
-      <Link to={`/page/${pageId}`} key={pageId} className="list-group-item list-group-item-action bg-dark text-light">{page.text}</Link>
+    const pageListItems = Array.from(this.props.pages).map(pageBlock => (
+      <Link to={`/page/${pageBlock.id}`} key={pageBlock.id} className="list-group-item list-group-item-action bg-dark text-light">{pageBlock.text}</Link>
     ))
     return (
       <div className="file-pane">

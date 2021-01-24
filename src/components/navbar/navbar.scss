@@ -1,0 +1,11 @@
+.navbar {
+    display: flex;
+}
+
+.navbar__search {
+    flex: 0 1 200px;
+}
+
+.navbar__search-results {
+    position: static;
+}
