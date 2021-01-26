@@ -16,9 +16,10 @@ const Block = ({id = uuidv4(), parentId = null, text, childrenIds = []}={}) => (
 const blocksSlice = createSlice({
   name: 'blocks',
   initialState: {
-    'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['efgh', 'ijkl'] },
+    'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['efgh', 'ijkl', 'mnop'] },
     'efgh': { id: 'efgh', parentId: 'abcd', text: 'Lorem ipsum', childrenIds: [] },
-    'ijkl': { id: 'ijkl', parentId: 'abcd', text: 'foo bar baz', childrenIds: [] }
+    'ijkl': { id: 'ijkl', parentId: 'abcd', text: 'Normal *italics* **bold** ***bold italics***', childrenIds: [] },
+    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: [] }
   },
   reducers: {
     addBlock: (state, action) => {
@@ -34,6 +35,7 @@ const blocksSlice = createSlice({
         parentBlock.childrenIds.push(block.id)
       }
       state[block.id] = block
+      return block
     },
     changeParent: (state, action) => {
       const { blockId, parentId } = action.payload
