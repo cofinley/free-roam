@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import './file-pane.scss'
 
-import { addBlock } from '../block/blockSlice'
+import { addBlock, BlockModel } from '../block/blockSlice'
 
 const FilePane = props => {
 
@@ -28,7 +28,7 @@ const FilePane = props => {
   return (
     <div className="file-pane">
       <Link to="/"><h2 className="text-light text-center">Free-roam</h2></Link>
-      <button className="btn btn-dark mx-auto" type="button" onClick={() => dispatch(addBlock())}>New Page</button>
+      <button className="btn btn-dark mx-auto" type="button" onClick={() => dispatch(addBlock(BlockModel({})))}>New Page</button>
       <div className="list-group list-group-flush mt-3">
         {pageListItems}
       </div>

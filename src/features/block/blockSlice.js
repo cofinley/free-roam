@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const DEFAULT_TEXT = 'Click here to edit'
 
-const Block = ({id = uuidv4(), parentId = null, text, childrenIds = []}={}) => (
+export const BlockModel = ({id = uuidv4(), parentId = null, text, childrenIds = []}={}) => (
   {
     id,
     parentId,
@@ -12,30 +12,27 @@ const Block = ({id = uuidv4(), parentId = null, text, childrenIds = []}={}) => (
   }
 )
 
-
 const blocksSlice = createSlice({
   name: 'blocks',
   initialState: {
-    'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['efgh', 'ijkl', 'mnop'] },
-    'efgh': { id: 'efgh', parentId: 'abcd', text: 'Lorem ipsum', childrenIds: [] },
+    'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['ijkl', 'mnop'] },
+    'efgh': { id: 'efgh', parentId: null, text: 'Lorem ipsum', childrenIds: ['qrst'] },
     'ijkl': { id: 'ijkl', parentId: 'abcd', text: 'Normal *italics* **bold** ***bold italics***', childrenIds: [] },
-    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: [] }
+    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: [] },
+    'qrst': { id: 'qrst', parentId: 'efgh', text: 'Click here to edit', childrenIds: [] },
   },
   reducers: {
     addBlock: (state, action) => {
-      const { parentId, text } = action.payload
-      const block = Block({ text })
-      if (!parentId) {
-        const childBlock = Block({ parentId: block.id, text: DEFAULT_TEXT })
+      const block = action.payload
+      if (!block.parentId) {
+        const childBlock = BlockModel({ parentId: block.id, text: DEFAULT_TEXT })
         block.childrenIds.push(childBlock.id)
         state[childBlock.id] = childBlock
       } else {
-        block.parentId = parentId
-        const parentBlock = state[parentId]
+        const parentBlock = state[block.parentId]
         parentBlock.childrenIds.push(block.id)
       }
       state[block.id] = block
-      return block
     },
     changeParent: (state, action) => {
       const { blockId, parentId } = action.payload

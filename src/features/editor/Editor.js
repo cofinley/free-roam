@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 
 import Block from '../block/Block'
@@ -7,6 +8,8 @@ import './editor.scss'
 
 const Editor = ({ blockId, isRoot }) => {
   const blocks = useSelector(state => state.blocks)
+  const links = useSelector(state => state.links)
+  const references = links[blockId]
   const block = blocks[blockId]
 
   const blockLoaded = block !== undefined
@@ -24,6 +27,24 @@ const Editor = ({ blockId, isRoot }) => {
     )
   })
 
+  const linkedReferences = () => {
+    if (block.parentId || !references || !references.length) {
+      return
+    }
+    return references.map(referenceBlockId => {
+      const referenceBlock = blocks[referenceBlockId]
+      return (
+        <div>
+          <Link to={`/page/${referenceBlockId}`}><h5>{referenceBlock.text}</h5></Link>
+          <Editor
+            blockId={referenceBlockId}
+            isRoot={false}
+          />
+        </div>
+      )
+    })
+  }
+
   return (
     <div className={`editor ${isRoot ? 'editor--root' : ''}`}>
       {isRoot &&
@@ -35,6 +56,12 @@ const Editor = ({ blockId, isRoot }) => {
       {children.length > 0 &&
         <div className="ml-2">
           {children}
+        </div>
+      }
+      {block.parentId === null && (references && references.length > 0) &&
+        <div className="linked-references">
+          <b>Linked References</b>
+          {linkedReferences()}
         </div>
       }
     </div>

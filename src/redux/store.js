@@ -3,13 +3,15 @@ import blocksReducer from '../features/block/blockSlice'
 import filePaneReducer from '../features/file-pane/filePaneSlice'
 import viewPaneReducer from '../features/view-pane/viewPaneSlice'
 import navbarReducer from '../features/navbar/navbarSlice'
+import linksReducer from '../features/links/linksSlice'
 
 const store = configureStore({
   reducer: {
     blocks: blocksReducer,
     filePane: filePaneReducer,
     viewPane: viewPaneReducer,
-    navbar: navbarReducer
+    navbar: navbarReducer,
+    links: linksReducer
   }
 })
 

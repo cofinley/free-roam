@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const filePaneSlice = createSlice({
   name: 'filePane',
   initialState: {
-    favoriteBlockIds: ['abcd']
+    favoriteBlockIds: ['abcd', 'efgh']
   },
   reducers: {
     addShortcut: (state, action) => {

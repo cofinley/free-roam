@@ -6,21 +6,24 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import './block.scss'
 
-import { addBlock, updateBlock } from './blockSlice'
+import { addBlock, updateBlock, BlockModel } from './blockSlice'
+import { setLinks } from '../links/linksSlice'
 
 const Block = ({ block }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
-
   const [editing, setEditing] = useState(false)
 
-  const getOrCreateBlockFromText = text => {
-    const block = Object.values(blocks).find(block => block.text === text)
-    if (block) {
-      return block
+  const linkToPage = text => {
+    const foundPage = Object.values(blocks)
+      .filter(block => !block.parentId)
+      .find(block => block.text === text)
+    if (foundPage) {
+      return foundPage
     }
-    const newBlock = dispatch(addBlock({ text }))
-    return newBlock
+    const newPageBlock = BlockModel({ text })
+    dispatch(addBlock(newPageBlock))
+    return newPageBlock
   }
 
   const rendered = () => {
@@ -38,12 +41,16 @@ const Block = ({ block }) => {
 
   const renderLinks = text => {
     const pat = /\[\[([^[\]]*)\]\]/g
-    return reactStringReplace(text, pat, (match, i) => {
-      const block = getOrCreateBlockFromText(match)
+    const links = new Set()
+    const jsxArray = reactStringReplace(text, pat, (match, i) => {
+      const pageBlock = linkToPage(match)
+      links.add(pageBlock.id)
       return (
-        <Link key={i + match} to={`/page/${block.id}`}>{block.text}</Link>
+        <Link key={i + match} to={`/page/${pageBlock.id}`}>{pageBlock.text}</Link>
       )
     })
+    dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: Array.from(links)}))
+    return jsxArray
   }
 
   if (editing) {
