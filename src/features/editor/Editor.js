@@ -1,10 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 
 import Block from '../block/Block'
 
 import './editor.scss'
+
+import PageLink from '../links/PageLink'
 
 const Editor = ({ blockId, isRoot }) => {
   const blocks = useSelector(state => state.blocks)
@@ -35,7 +36,7 @@ const Editor = ({ blockId, isRoot }) => {
       const referenceBlock = blocks[referenceBlockId]
       return (
         <div>
-          <Link to={`/page/${referenceBlockId}`}><h5>{referenceBlock.text}</h5></Link>
+          <PageLink pageBlockId={referenceBlockId}><h5>{referenceBlock.text}</h5></PageLink>
           <Editor
             blockId={referenceBlockId}
             isRoot={false}

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { compiler } from 'markdown-to-jsx'
 import reactStringReplace from "react-string-replace";
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,6 +7,7 @@ import './block.scss'
 
 import { addBlock, updateBlock, BlockModel } from './blockSlice'
 import { setLinks } from '../links/linksSlice'
+import PageLink from '../links/PageLink'
 
 const Block = ({ block }) => {
   const dispatch = useDispatch()
@@ -46,7 +46,7 @@ const Block = ({ block }) => {
       const pageBlock = linkToPage(match)
       links.add(pageBlock.id)
       return (
-        <Link key={i + match} to={`/page/${pageBlock.id}`}>{pageBlock.text}</Link>
+        <PageLink key={i + match} pageBlockId={pageBlock.id}>{pageBlock.text}</PageLink>
       )
     })
     dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: Array.from(links)}))

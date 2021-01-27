@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import './file-pane.scss'
 
 import { addBlock, BlockModel } from '../block/blockSlice'
+import PageLink from '../links/PageLink'
 
 const FilePane = props => {
 
@@ -15,13 +16,13 @@ const FilePane = props => {
   const pageListItems = favoriteBlockIds.map(blockId => {
     const block = blocks[blockId]
     return (
-      <Link
-        to={`/page/${blockId}`}
+      <PageLink
+        pageBlockId={blockId}
         key={blockId}
         className="list-group-item list-group-item-action bg-dark text-light"
       >
         {block.text}
-      </Link>
+      </PageLink>
     )
   })
 

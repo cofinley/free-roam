@@ -3,12 +3,14 @@ import { createSlice } from '@reduxjs/toolkit'
 const viewPaneSlice = createSlice({
   name: 'viewPane',
   initialState: {
-    blockIds: ['abcd', 'efgh', 'ijkl']
+    blockIds: ['abcd']
   },
   reducers: {
     pushBlock: (state, action) => {
       const { blockId } = action.payload
-      state.blockIds.push(blockId)
+      if (!state.blockIds.includes(blockId)) {
+        state.blockIds.unshift(blockId)
+      }
     },
     popBlock: (state, action) => {
       const { blockId } = action.payload
