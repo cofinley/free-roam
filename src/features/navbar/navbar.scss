@@ -3,9 +3,14 @@
 }
 
 .navbar__search {
-    flex: 0 1 200px;
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 300px;
+    position: relative;
 }
 
 .navbar__search-results {
-    position: static;
+    position: absolute;
+    width: 100%;
+    top: 40px;
 }
