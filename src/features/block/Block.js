@@ -46,7 +46,7 @@ const Block = ({ block, isTitle }) => {
       const pageBlock = linkToPage(match)
       links.add(pageBlock.id)
       return (
-        <PageLink key={i + match} pageBlockId={pageBlock.id}>{pageBlock.text}</PageLink>
+        <PageLink key={`${match}-${i}`} pageBlockId={pageBlock.id}>{pageBlock.text}</PageLink>
       )
     })
     dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: Array.from(links)}))

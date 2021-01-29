@@ -1,5 +1,6 @@
 .navbar {
     display: flex;
+    justify-content: flex-end;
 }
 
 .navbar__search {
@@ -13,4 +14,15 @@
     position: absolute;
     width: 100%;
     top: 40px;
+}
+
+.btn--toggle-favorite {
+    padding: 0 0 5px;
+    width: 30px;
+    box-shadow: none;
+    margin-left: 10px;
+
+    &:focus {
+        box-shadow: none;
+    }
 }

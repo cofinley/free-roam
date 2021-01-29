@@ -3,13 +3,37 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import './navbar.scss'
 
+import { Star, StarFill, Search } from 'react-bootstrap-icons'
 import { updateSearchQuery } from './navbarSlice'
+import { toggleShortcut } from '../file-pane/filePaneSlice'
 import PageLink from '../links/PageLink'
 
-const Navbar = props => {
+const Navbar = ({ blockId }) => {
   const dispatch = useDispatch()
   const searchQuery = useSelector(state => state.navbar.searchQuery)
   const blocks = useSelector(state => state.blocks)
+  const favoriteBlockIds = useSelector(state => state.filePane.favoriteBlockIds)
+
+  let isFavorite
+  if (blockId) {
+    const block = blocks[blockId]
+    if (block) {
+      isFavorite = favoriteBlockIds.includes(block.id)
+    }
+  }
+
+  const toggleFavorite = event => {
+    dispatch(toggleShortcut({ blockId }))
+  }
+
+  let favoriteButton
+  if (isFavorite !== undefined) {
+    if (isFavorite) {
+      favoriteButton = <StarFill color="white" />
+    } else {
+      favoriteButton = <Star color="white" />
+    }
+  }
 
   const clearSearch = () => {
     dispatch(updateSearchQuery({ query: '' }))
@@ -36,14 +60,18 @@ const Navbar = props => {
 
   return (
     <div className="navbar">
-      <div></div>
       <div className="navbar__search">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Find or Create Page"
-          onChange={(event) => dispatch(updateSearchQuery({ query: event.target.value }))}
-        />
+        <div className="input-group">
+          <div className="input-group-prepend">
+            <span className="input-group-text bg-dark text-dark border-secondary"><Search color="white"/></span>
+          </div>
+          <input
+            type="text"
+            className="form-control bg-dark text-light border-secondary"
+            placeholder="Find or Create Page"
+            onChange={(event) => dispatch(updateSearchQuery({ query: event.target.value }))}
+          />
+        </div>
         {suggestions.length > 0 &&
           <div className="navbar__search-results">
             <ul className="list-group list-group-flush">
@@ -52,6 +80,9 @@ const Navbar = props => {
           </div>
         }
       </div>
+      {favoriteButton !== undefined &&
+        <button className="btn btn--toggle-favorite" onClick={toggleFavorite}>{favoriteButton}</button>
+      }
     </div>
   )
 }

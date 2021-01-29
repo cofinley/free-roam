@@ -2,9 +2,15 @@ import React from 'react'
 
 import './main.scss'
 
-const Main = props => {
+import Editor from '../editor/Editor'
+import Navbar from '../navbar/Navbar'
+
+const Main = ({ blockId }) => {
   return (
-    <div className="main">{props.children}</div>
+    <div className="main">
+      <Navbar blockId={blockId}/>
+      <Editor blockId={blockId} isRoot isMain />
+    </div>
   )
 }
 

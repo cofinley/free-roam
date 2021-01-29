@@ -14,8 +14,7 @@ const Editor = ({ blockId, isRoot, isMain }) => {
   const references = links[blockId]
   const block = blocks[blockId]
 
-  const blockLoaded = block !== undefined
-  if (!blockLoaded) {
+  if (!block) {
     return <h1 className="text-light">Page not found</h1>
   }
 
