@@ -1,3 +1,17 @@
 .references {
     margin-top: 25px;
 }
+
+.editor--child {
+    padding-left: 6px;
+}
+
+.editor__children {
+    border-left: 1px solid white;
+    margin-left: 20px;
+
+    .editor--root > & {
+        border: none;
+        margin-left: -20px;
+    }
+}

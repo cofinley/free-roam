@@ -1,6 +1,14 @@
 @import "../../index.scss";
 
-.block--edit {
+.block {
+    display: flex;
+}
+
+.block-actions-container {
+    margin-right: 10px;
+}
+
+.block-text--edit {
     width: 100%;
     background: transparent;
     outline-color: transparent;
@@ -12,9 +20,25 @@
     margin-left: -1px;
 }
 
-.block--title {
+.block-text--title {
     @extend .h1;
     @extend .d-block;
     @extend .text-light;
     margin-bottom: 32px;
 }
+
+.block-actions {
+    cursor: pointer;
+}
+
+.block-actions--toggle {
+    opacity: 0;
+    font-size: 14px;
+    transition: opacity 0.1s ease-in-out;
+    margin-right: 3px;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+

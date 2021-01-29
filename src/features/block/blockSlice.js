@@ -18,8 +18,11 @@ const blocksSlice = createSlice({
     'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['ijkl', 'mnop'] },
     'efgh': { id: 'efgh', parentId: null, text: 'Lorem ipsum', childrenIds: ['qrst'] },
     'ijkl': { id: 'ijkl', parentId: 'abcd', text: 'Normal *italics* **bold** ***bold italics***', childrenIds: [] },
-    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: [] },
+    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: ['uvwx', 'a1'] },
     'qrst': { id: 'qrst', parentId: 'efgh', text: 'Click here to edit', childrenIds: [] },
+    'uvwx': { id: 'uvwx', parentId: 'mnop', text: "I'm a third layer block", childrenIds: ['a2'] },
+    'a1': { id: 'uvwx', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
+    'a2': { id: 'uvwx', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
   },
   reducers: {
     addBlock: (state, action) => {

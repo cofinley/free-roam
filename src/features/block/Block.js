@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import './block.scss'
 
 import { addBlock, updateBlock, BlockModel } from './blockSlice'
+import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
 
@@ -58,33 +59,38 @@ const Block = ({ block, isTitle }) => {
     dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
   }
 
-  const classes = ['block']
+  const classes = ['block-text']
   if (editing) {
-    classes.push('block--edit')
+    classes.push('block-text--edit')
   }
   if (isTitle) {
-    classes.push('block--title')
+    classes.push('block-text--title')
   }
   const className = classes.join(' ')
 
-  if (editing) {
-    return (
-      <textarea
-        className={className}
-        autoFocus
-        onBlur={save}
-        blockId={block.id}
-        defaultValue={block.text}
-      />
-    )
-  }
   return (
-    <span
-      className={className}
-      onClick={() => setEditing(true)}
-    >
-      {rendered()}
-    </span>
+      <div className="block">
+      {!isTitle &&
+        <BlockActions block={block} />
+      }
+      {editing &&
+        <textarea
+          className={className}
+          autoFocus
+          onBlur={save}
+          blockId={block.id}
+          defaultValue={block.text}
+        />
+      }
+      {!editing &&
+        <span
+          className={className}
+          onClick={() => setEditing(true)}
+        >
+          {rendered()}
+        </span>
+      }
+    </div>
   )
 }
 
