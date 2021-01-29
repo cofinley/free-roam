@@ -9,7 +9,7 @@ import { addBlock, updateBlock, BlockModel } from './blockSlice'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
 
-const Block = ({ block }) => {
+const Block = ({ block, isTitle }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
   const [editing, setEditing] = useState(false)
@@ -53,20 +53,34 @@ const Block = ({ block }) => {
     return jsxArray
   }
 
+  const save = event => {
+    setEditing(false)
+    dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
+  }
+
+  const classes = ['block']
+  if (editing) {
+    classes.push('block--edit')
+  }
+  if (isTitle) {
+    classes.push('block--title')
+  }
+  const className = classes.join(' ')
+
   if (editing) {
     return (
       <textarea
-        className="block block--edit text-light"
+        className={className}
         autoFocus
-        onBlur={() => setEditing(false)}
+        onBlur={save}
         blockId={block.id}
         defaultValue={block.text}
-        onChange={(event) => dispatch(updateBlock({ blockId: block.id, text: event.target.value }))}
       />
     )
   }
   return (
     <span
+      className={className}
       onClick={() => setEditing(true)}
     >
       {rendered()}

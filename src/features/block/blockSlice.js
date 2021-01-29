@@ -47,9 +47,25 @@ const blocksSlice = createSlice({
       if (block) {
         block.parentId = parentId || block.parentId
         block.childrenIds = childrenIds || block.childrenIds
-        block.text = text || block.text
+        const currentText = block.text
+        block.text = text || currentText
         state[blockId] = block
+        if (!block.parentId) {
+          blocksSlice.caseReducers.changeTitle(state, { payload: { currentTitle: currentText, newTitle: text } })
+        }
       }
+    },
+    changeTitle: (state, action) => {
+      const { currentTitle, newTitle } = action.payload
+      /* eslint-disable no-useless-escape */
+      const linkPat = new RegExp(`\[\[${currentTitle}\]\]`, 'g')
+      Object.values(state)
+        .map(block => {
+          if (linkPat.test(block.text)) {
+            state[block.id].text = block.text.replace(`[[${currentTitle}]]`, `[[${newTitle}]]`)
+          }
+          return true
+        })
     },
     searchForBlocks: (state, action) => {
       const { query, exact } = action.payload

@@ -25,7 +25,7 @@ const App = () => (
         <Route
           path="/page/:blockId"
           render={({ match }) => (
-            <Editor blockId={match.params.blockId} isRoot />
+            <Editor blockId={match.params.blockId} isRoot isMain />
           )}
         />
       </Main>

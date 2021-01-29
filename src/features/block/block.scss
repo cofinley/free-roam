@@ -1,3 +1,5 @@
+@import "../../index.scss";
+
 .block--edit {
     width: 100%;
     background: transparent;
@@ -11,5 +13,8 @@
 }
 
 .block--title {
+    @extend .h1;
+    @extend .d-block;
+    @extend .text-light;
     margin-bottom: 32px;
 }

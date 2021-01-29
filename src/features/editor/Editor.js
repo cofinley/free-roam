@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 
 import Block from '../block/Block'
@@ -7,7 +7,8 @@ import './editor.scss'
 
 import PageLink from '../links/PageLink'
 
-const Editor = ({ blockId, isRoot }) => {
+const Editor = ({ blockId, isRoot, isMain }) => {
+  const [showUnlinkedRefs, setShowUnlinkedRefs] = useState(false)
   const blocks = useSelector(state => state.blocks)
   const links = useSelector(state => state.links)
   const references = links[blockId]
@@ -46,10 +47,33 @@ const Editor = ({ blockId, isRoot }) => {
     })
   }
 
+  const unlinkedReferences = () => {
+    if (block.parentId || !showUnlinkedRefs) {
+      return
+    }
+    /* eslint-disable no-useless-escape */
+    const titlePat = new RegExp(`(?<![\[\w])${block.text}(?![\[\w]+)`, 'gi')
+    const references = Object.values(blocks)
+      .filter(otherBlock => otherBlock.parentId && titlePat.test(otherBlock.text))
+      .map(otherBlock => (
+        <div>
+          <PageLink pageBlockId={otherBlock.id}><h5>{otherBlock.text}</h5></PageLink>
+          <Editor
+            blockId={otherBlock.id}
+            isRoot={false}
+          />
+        </div>
+      ))
+    if (!references.length) {
+      return <span>No unlinked references</span>
+    }
+    return references
+  }
+
   return (
     <div className={`editor ${isRoot ? 'editor--root' : ''}`}>
       {isRoot &&
-        <h1 className="block block--title">{block.text}</h1>
+        <Block block={block} isTitle={true} />
       }
       {!isRoot &&
         <Block block={block} />
@@ -59,10 +83,26 @@ const Editor = ({ blockId, isRoot }) => {
           {children}
         </div>
       }
-      {block.parentId === null && (references && references.length > 0) &&
-        <div className="linked-references">
+      {block.parentId === null && (references && references.length > 0) && isMain &&
+        <div className="references references--linked">
           <b>Linked References</b>
           {linkedReferences()}
+        </div>
+      }
+      {block.parentId === null && isMain &&
+        <div className="references">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowUnlinkedRefs(!showUnlinkedRefs)}
+          >
+            Unlinked References
+          </button>
+          {showUnlinkedRefs &&
+            <div className="references references--unlinked">
+              {unlinkedReferences()}
+            </div>
+          }
         </div>
       }
     </div>
