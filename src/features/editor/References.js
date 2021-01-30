@@ -37,11 +37,14 @@ const References = ({ block, isMain }) => {
     const references = Object.values(blocks)
       .filter(otherBlock => otherBlock.parentId && titlePat.test(otherBlock.text))
       .map(otherBlock => (
-        <div>
-          <PageLink pageBlockId={otherBlock.id}><h4>{otherBlock.text}</h4></PageLink>
+        <div key={otherBlock.id}>
+          <PageLink pageBlockId={otherBlock.id}>
+            <h4>{otherBlock.text}</h4>
+          </PageLink>
           <Editor
             blockId={otherBlock.id}
             isRoot={false}
+            isMain={isMain}
           />
         </div>
       ))

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { compiler } from 'markdown-to-jsx'
 import reactStringReplace from "react-string-replace";
 import { useDispatch, useSelector } from 'react-redux'
+import TextareaAutosize from 'react-textarea-autosize'
 
 import './block.scss'
 
@@ -33,7 +34,9 @@ const Block = ({ block, isTitle }) => {
     const jsxMdArray = linkedPlaintext
       .map(element => {
       if (typeof element === 'string') {
-        return compiler(element, { forceInline: true })
+        const jsx = compiler(element, { forceInline: true })
+        const keyedJsx = React.cloneElement(jsx, { key: element })
+        return keyedJsx
       }
       return element
     })
@@ -47,16 +50,27 @@ const Block = ({ block, isTitle }) => {
       const pageBlock = linkToPage(match)
       links.add(pageBlock.id)
       return (
-        <PageLink key={`${match}-${i}`} pageBlockId={pageBlock.id}>{pageBlock.text}</PageLink>
+        <PageLink
+          key={`${match}-${i}`}
+          pageBlockId={pageBlock.id}
+        >
+          {pageBlock.text}
+        </PageLink>
       )
     })
     dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: Array.from(links)}))
     return jsxArray
   }
 
+  const edit = event => {
+    setEditing(true)
+  }
+
   const save = event => {
     setEditing(false)
-    dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
+    if (block.text !== event.target.value) {
+      dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
+    }
   }
 
   const classes = ['block-text']
@@ -73,19 +87,18 @@ const Block = ({ block, isTitle }) => {
       {!isTitle &&
         <BlockActions block={block} />
       }
-      {editing &&
-        <textarea
-          className={className}
-          autoFocus
-          onBlur={save}
-          blockId={block.id}
-          defaultValue={block.text}
-        />
-      }
-      {!editing &&
+      {editing
+        ?
+          <TextareaAutosize
+            className={className}
+            autoFocus
+            onBlur={save}
+            defaultValue={block.text}
+          />
+        :
         <span
           className={className}
-          onClick={() => setEditing(true)}
+          onClick={edit}
         >
           {rendered()}
         </span>

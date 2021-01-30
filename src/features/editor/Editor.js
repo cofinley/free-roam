@@ -16,15 +16,19 @@ const Editor = ({ blockId, isRoot, isMain }) => {
 
   const children = block.childrenIds.map(childBlockId => (
     <Editor
-      key={`editor-${childBlockId}`}
+      key={childBlockId}
       isRoot={false}
+      isMain={isMain}
       blockId={childBlockId}
     />
   ))
 
   return (
     <div className={`editor ${isRoot ? 'editor--root' : 'editor--child'}`}>
-      <Block block={block} isTitle={isRoot} />
+      <Block
+        block={block}
+        isTitle={isRoot}
+      />
       {children.length > 0 &&
         <div className="editor__children">
           {children}

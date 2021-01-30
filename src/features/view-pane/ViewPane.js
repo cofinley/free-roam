@@ -12,9 +12,9 @@ const ViewPane = props => {
   const viewPaneBlocks = blockIds.map(blockId => {
     const block = blocks[blockId]
     return (
-      <div key={`view-pane-${block.id}`}>
+      <div key={block.id}>
         Outline of:
-        <Editor blockId={block.id} isRoot />
+        <Editor blockId={block.id} isRoot isMain={false} />
       </div>
     )
   })

@@ -6,6 +6,12 @@
 
 .block-actions-container {
     margin-right: 10px;
+    display: flex;
+}
+
+.block-text {
+    @extend .text-light;
+    overflow: hidden;
 }
 
 .block-text--edit {
@@ -15,15 +21,13 @@
     border: 1px solid transparent;
     resize: none;
     border-style: none;
-    overflow: auto;
     outline: none;
-    margin-left: -1px;
+    padding: 0;
 }
 
 .block-text--title {
     @extend .h1;
     @extend .d-block;
-    @extend .text-light;
     margin-bottom: 32px;
 }
 
