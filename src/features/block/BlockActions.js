@@ -2,15 +2,15 @@ import React from 'react'
 
 import { CaretRightFill, CaretDownFill } from 'react-bootstrap-icons'
 
-const BlockActions = ({ block, show }) => {
+const BlockActions = ({ block, foldBlock, setFoldBlock }) => {
   return (
     <div className="block-actions-container">
       <span className="block-actions block-actions--toggle">
-        {show &&
-          <CaretDownFill color="white" />
+        {foldBlock &&
+          <CaretRightFill color="white" onClick={() => setFoldBlock(false)} />
         }
-        {!show &&
-          <CaretRightFill color="white" />
+        {!foldBlock &&
+          <CaretDownFill color="white" onClick={() => setFoldBlock(true)} />
         }
       </span>
       <span className="block-actions block-actions--bullet">•</span>

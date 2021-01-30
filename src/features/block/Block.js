@@ -11,7 +11,7 @@ import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
 
-const Block = ({ block, isTitle }) => {
+const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
   const [editing, setEditing] = useState(false)
@@ -85,7 +85,11 @@ const Block = ({ block, isTitle }) => {
   return (
       <div className="block">
       {!isTitle &&
-        <BlockActions block={block} />
+        <BlockActions
+          block={block}
+          foldBlock={foldBlock}
+          setFoldBlock={setFoldBlock}
+        />
       }
       {editing
         ?
