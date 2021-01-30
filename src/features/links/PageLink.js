@@ -2,9 +2,11 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import './link.scss'
+
 import { pushBlock } from '../view-pane/viewPaneSlice'
 
-const PageLink = ({ pageBlockId, children, ...rest }) => {
+const PageLink = ({ pageBlockId, children, noStyling, ...rest }) => {
   const dispatch = useDispatch()
   const to = `/page/${pageBlockId}`
 
@@ -19,6 +21,7 @@ const PageLink = ({ pageBlockId, children, ...rest }) => {
       <Link
         to={to}
         onClick={navigate}
+        className={`block-link${noStyling ? ' block-link--no-styling' : ''}`}
         {...rest}
       >
         {children}

@@ -2,6 +2,8 @@ import React from 'react'
 
 import { CaretRightFill, CaretDownFill } from 'react-bootstrap-icons'
 
+import PageLink from '../links/PageLink'
+
 const BlockActions = ({ block, foldBlock, setFoldBlock }) => {
   return (
     <div className="block-actions-container">
@@ -13,7 +15,12 @@ const BlockActions = ({ block, foldBlock, setFoldBlock }) => {
           <CaretDownFill color="white" onClick={() => setFoldBlock(true)} />
         }
       </span>
-      <span className="block-actions block-actions--bullet">•</span>
+      <PageLink
+        pageBlockId={block.id}
+        noStyling
+      >
+        <span className="block-actions block-actions--bullet">•</span>
+      </PageLink>
     </div>
   )
 }

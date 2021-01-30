@@ -1,0 +1,9 @@
+@import "../../index.scss";
+
+.block-link--no-styling {
+    @extend .text-light;
+
+    &:hover {
+        text-decoration: none;
+    }
+}

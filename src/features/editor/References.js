@@ -17,7 +17,7 @@ const References = ({ block, isMain }) => {
     return references.map(referenceBlockId => {
       const referenceBlock = blocks[referenceBlockId]
       return (
-        <div>
+        <div key={referenceBlockId}>
           <PageLink pageBlockId={referenceBlockId}><h4>{referenceBlock.text}</h4></PageLink>
           <Editor
             blockId={referenceBlockId}
