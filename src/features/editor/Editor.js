@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 
 import './editor.scss'
@@ -6,9 +6,10 @@ import './editor.scss'
 import References from './References'
 import Block from '../block/Block'
 
-const Editor = ({ blockId, isRoot, isMain }) => {
+const Editor = ({ blockId, isRoot, isMain, stopRecursion }) => {
   const blocks = useSelector(state => state.blocks)
   const block = blocks[blockId]
+  const [foldNextLevel, setFoldNextLevel] = useState(false)
 
   if (!block) {
     return <h1 className="text-light">Page not found</h1>
@@ -20,6 +21,7 @@ const Editor = ({ blockId, isRoot, isMain }) => {
       isRoot={false}
       isMain={isMain}
       blockId={childBlockId}
+      stopRecursion={foldNextLevel}
     />
   ))
 
@@ -29,9 +31,14 @@ const Editor = ({ blockId, isRoot, isMain }) => {
         block={block}
         isTitle={isRoot}
       />
-      {children.length > 0 &&
+      {!stopRecursion && children.length > 0 &&
         <div className="editor__children">
-          {children}
+          {block.parentId !== null &&
+            <div className="editor__children__thread-line" onClick={() => setFoldNextLevel(!foldNextLevel)}/>
+          }
+          <div className="editor__children__container">
+            {children}
+          </div>
         </div>
       }
       {isRoot &&

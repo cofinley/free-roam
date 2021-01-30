@@ -7,11 +7,23 @@
 }
 
 .editor__children {
-    border-left: 1px solid white;
     margin-left: 20px;
+    display: flex;
 
     .editor--root > & {
-        border: none;
         margin-left: -20px;
+    }
+}
+
+.editor__children__thread-line {
+    position: relative;
+    width: 7px;
+    left: -6px;
+    cursor: pointer;
+    border-right: 1px solid white;
+
+    &:hover {
+        left: -5px;
+        border-right: 3px solid white;
     }
 }
