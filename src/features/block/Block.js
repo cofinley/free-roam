@@ -6,7 +6,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 
 import './block.scss'
 
-import { addBlock, updateBlock, BlockModel } from './blockSlice'
+import { addBlock, updateBlock, repositionBlock, BlockModel } from './blockSlice'
 import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
@@ -66,6 +66,18 @@ const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
     setEditing(true)
   }
 
+  const onKeyDown = event => {
+    event.preventDefault()
+    event.target.focus()
+    if (event.key === 'Tab') {
+      if (event.shiftKey) {
+        dispatch(repositionBlock({ blockId: block.id, direction: 'backward' }))
+      } else {
+        dispatch(repositionBlock({ blockId: block.id, direction: 'forward' }))
+      }
+    }
+  }
+
   const save = event => {
     setEditing(false)
     if (block.text !== event.target.value) {
@@ -96,6 +108,7 @@ const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
           <TextareaAutosize
             className={className}
             autoFocus
+            onKeyDown={onKeyDown}
             onBlur={save}
             defaultValue={block.text}
           />

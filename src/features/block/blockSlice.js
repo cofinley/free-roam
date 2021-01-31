@@ -21,8 +21,8 @@ const blocksSlice = createSlice({
     'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: ['uvwx', 'a1'] },
     'qrst': { id: 'qrst', parentId: 'efgh', text: 'Click here to edit', childrenIds: [] },
     'uvwx': { id: 'uvwx', parentId: 'mnop', text: "I'm a third layer block", childrenIds: ['a2'] },
-    'a1': { id: 'uvwx', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
-    'a2': { id: 'uvwx', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
+    'a1': { id: 'a1', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
+    'a2': { id: 'a2', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
   },
   reducers: {
     addBlock: (state, action) => {
@@ -70,31 +70,33 @@ const blocksSlice = createSlice({
           return true
         })
     },
-    searchForBlocks: (state, action) => {
-      const { query, exact } = action.payload
-      if (!query) {
-        return
-      }
-      const searchResults = Array.from(state)
-        .filter(([blockId, block]) => {
-          if (exact) {
-            return block.text === query
+    repositionBlock: (state, action) => {
+      const { blockId, direction } = action.payload
+      const block = state[blockId]
+      const parentBlock = state[block.parentId]
+      const blockIndex = parentBlock.childrenIds.indexOf(block.id)
+      if (direction === 'forward') {
+        if (blockIndex > 0) {
+          const previousSibling = state[parentBlock.childrenIds[blockIndex-1]]
+          parentBlock.childrenIds.splice(blockIndex, 1)
+          previousSibling.childrenIds.push(blockId)
+          block.parentId = previousSibling.id
+        }
+      } else {
+        const parentBlock = state[block.parentId]
+        if (parentBlock.parentId) {
+          const grandParentBlock = state[parentBlock.parentId]
+          const parentBlockIndex = grandParentBlock.childrenIds.indexOf(parentBlock.id)
+          if (parentBlockIndex !== -1) {
+            parentBlock.childrenIds.splice(blockIndex, 1)
+            grandParentBlock.childrenIds.splice(parentBlockIndex + 1, 0, blockId)
+            block.parentId = grandParentBlock.id
           }
-          return block.text.indexOf(query) !== -1
-        })
-        .map(([blockId, block]) => blockId)
-      return searchResults
-    },
-    getOrAddBlock: (state, action) => {
-      const { text, parentId } = action.payload
-      const existingBlock = blocksSlice.caseReducers.getBlockByText(state, { text })
-      if (existingBlock) {
-        return existingBlock
+        }
       }
-      return blocksSlice.caseReducers.addBlock(state, { text, parentId })
     }
   }
 })
 
-export const { getBlockByText, addBlock, updateBlock, searchForBlocks, getOrAddBlock } = blocksSlice.actions
+export const { getBlockByText, addBlock, updateBlock, repositionBlock } = blocksSlice.actions
 export default blocksSlice.reducer
