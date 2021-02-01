@@ -1,9 +1,10 @@
 @import "../../index.scss";
 
 .block-link--no-styling {
-    @extend .text-light;
+    color: unset;
 
     &:hover {
+        color: unset;
         text-decoration: none;
     }
 }

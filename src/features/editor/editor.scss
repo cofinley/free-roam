@@ -1,5 +1,16 @@
-.references {
-    margin-top: 25px;
+.breadcrumbs {
+    margin-bottom: 20px;
+}
+
+.breadcrumbs > * {
+    &::after {
+        content: "›";
+        margin: 0 10px;
+    }
+
+    &:last-child:after {
+        content: "";
+    }
 }
 
 .editor--child {
@@ -10,7 +21,7 @@
     margin-left: 20px;
     display: flex;
 
-    .editor--root > & {
+    .editor--page > & {
         margin-left: -20px;
     }
 }
@@ -30,4 +41,8 @@
         left: -5px;
         border-right: 3px solid white;
     }
+}
+
+.references {
+    margin-top: 25px;
 }

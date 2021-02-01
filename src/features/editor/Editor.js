@@ -5,6 +5,7 @@ import './editor.scss'
 
 import References from './References'
 import Block from '../block/Block'
+import Breadcrumbs from './Breadcrumbs'
 
 const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
   const blocks = useSelector(state => state.blocks)
@@ -15,6 +16,8 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
   if (!block) {
     return <h1 className="text-light">Page not found</h1>
   }
+
+  const isPage = block.parentId === null
 
   const children = block.childrenIds.map(childBlockId => (
     <Editor
@@ -27,10 +30,13 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
   ))
 
   return (
-    <div className={`editor ${isRoot ? 'editor--root' : 'editor--child'}`}>
+    <div className={`editor ${isRoot ? 'editor--root' : 'editor--child'}${isPage ? ' editor--page' : ''}`}>
+      {isRoot && !isPage &&
+        <Breadcrumbs block={block} />
+      }
       <Block
         block={block}
-        isTitle={isRoot}
+        isTitle={isRoot && isPage}
         foldBlock={foldBlock}
         setFoldBlock={setFoldBlock}
       />
