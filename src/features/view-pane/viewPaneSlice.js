@@ -14,7 +14,7 @@ const viewPaneSlice = createSlice({
     },
     popBlock: (state, action) => {
       const { blockId } = action.payload
-      const index = state.favoriteBlockIds.indexOf(blockId)
+      const index = state.blockIds.indexOf(blockId)
       if (index > -1) {
         state.blockIds.splice(blockId, 1)
       }
