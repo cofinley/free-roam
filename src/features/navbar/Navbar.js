@@ -14,16 +14,25 @@ const Navbar = ({ blockId }) => {
   const blocks = useSelector(state => state.blocks)
   const favoriteBlockIds = useSelector(state => state.filePane.favoriteBlockIds)
 
+  const getRoot = block => {
+    if (!block.parentId) {
+      return block.id
+    }
+    return getRoot(blocks[block.parentId])
+  }
+
   let isFavorite
   if (blockId) {
     const block = blocks[blockId]
     if (block) {
-      isFavorite = favoriteBlockIds.includes(block.id)
+      const rootBlockId = getRoot(block)
+      isFavorite = favoriteBlockIds.includes(rootBlockId)
     }
   }
 
   const toggleFavorite = event => {
-    dispatch(toggleShortcut({ blockId }))
+    const rootBlockId = getRoot(blocks[blockId])
+    dispatch(toggleShortcut({ blockId: rootBlockId }))
   }
 
   let favoriteButton
