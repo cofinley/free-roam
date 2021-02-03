@@ -38,6 +38,7 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
         block={block}
         isTitle={isRoot && isPage}
         foldBlock={foldBlock}
+        isMain={isMain}
         setFoldBlock={setFoldBlock}
       />
       {!stopRecursion && !foldBlock && children.length > 0 &&

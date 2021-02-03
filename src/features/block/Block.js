@@ -10,11 +10,13 @@ import { addBlock, updateBlock, repositionBlock, BlockModel } from './blockSlice
 import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
+import { updateFocusedBlock } from '../editor/editorSlice'
 
-const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
+const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
-  const [editing, setEditing] = useState(false)
+  const focusedBlock = useSelector(state => state.editor.focusedBlock)
+  const [editing, setEditing] = useState(focusedBlock.isMain === isMain && focusedBlock.blockId === block.id)
 
   const linkToPage = text => {
     const foundPage = Object.values(blocks)
@@ -76,6 +78,7 @@ const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
         dispatch(repositionBlock({ blockId: block.id, direction: 'forward' }))
       }
     }
+    dispatch(updateFocusedBlock({ blockId: block.id, isMain, caretPos: event.target.selectionStart }))
   }
 
   const save = event => {
@@ -83,6 +86,10 @@ const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
     if (block.text !== event.target.value) {
       dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
     }
+  }
+
+  const setCaretPos = event => {
+    event.target.selectionStart = focusedBlock.caretPos
   }
 
   const classes = ['block-text']
@@ -108,6 +115,7 @@ const Block = ({ block, isTitle, foldBlock, setFoldBlock }) => {
           <TextareaAutosize
             className={className}
             autoFocus
+            onFocus={setCaretPos}
             onKeyDown={onKeyDown}
             onBlur={save}
             defaultValue={block.text}
