@@ -69,16 +69,15 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
   }
 
   const onKeyDown = event => {
-    event.preventDefault()
-    event.target.focus()
     if (event.key === 'Tab') {
+      event.preventDefault()
       if (event.shiftKey) {
         dispatch(repositionBlock({ blockId: block.id, direction: 'backward' }))
       } else {
         dispatch(repositionBlock({ blockId: block.id, direction: 'forward' }))
       }
+      dispatch(updateFocusedBlock({ blockId: block.id, isMain, caretPos: event.target.selectionStart }))
     }
-    dispatch(updateFocusedBlock({ blockId: block.id, isMain, caretPos: event.target.selectionStart }))
   }
 
   const save = event => {
