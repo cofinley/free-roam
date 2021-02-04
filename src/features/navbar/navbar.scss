@@ -1,3 +1,5 @@
+@import "../../index.scss";
+
 .navbar {
     display: flex;
     justify-content: flex-end;
@@ -24,5 +26,17 @@
 
     &:focus {
         box-shadow: none;
+    }
+}
+
+.search-suggestion {
+    @extend .list-group-item;
+    @extend .list-group-item-action;
+    @extend .bg-dark;
+    @extend .text-light;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #1d2124 !important;
     }
 }

@@ -18,14 +18,14 @@ const PageLink = ({ pageBlockId, children, noStyling, ...rest }) => {
   }
 
   return (
-      <Link
-        to={to}
-        onClick={navigate}
-        className={`block-link${noStyling ? ' block-link--no-styling' : ''}`}
-        {...rest}
-      >
-        {children}
-      </Link>
+    <Link
+      to={to}
+      onClick={navigate}
+      className={`block-link${noStyling ? ' block-link--no-styling' : ''}`}
+      {...rest}
+    >
+      {children}
+    </Link>
   )
 }
 

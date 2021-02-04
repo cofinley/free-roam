@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from "react-router-dom"
 
 import './navbar.scss'
 
@@ -7,12 +8,14 @@ import { Star, StarFill, Search } from 'react-bootstrap-icons'
 import { updateSearchQuery } from './navbarSlice'
 import { toggleShortcut } from '../file-pane/filePaneSlice'
 import PageLink from '../links/PageLink'
+import { BlockModel, addBlock } from '../block/blockSlice'
 
 const Navbar = ({ blockId }) => {
   const dispatch = useDispatch()
   const searchQuery = useSelector(state => state.navbar.searchQuery)
   const blocks = useSelector(state => state.blocks)
   const favoriteBlockIds = useSelector(state => state.filePane.favoriteBlockIds)
+  const history = useHistory()
 
   const getRoot = block => {
     if (!block.parentId) {
@@ -44,27 +47,48 @@ const Navbar = ({ blockId }) => {
     }
   }
 
-  const clearSearch = () => {
+  const clearSearch = event => {
     dispatch(updateSearchQuery({ query: '' }))
+  }
+
+  const createAndNavigateToPage = () => {
+    const page = BlockModel({ text: searchQuery })
+    dispatch(addBlock(page))
+    clearSearch()
+    history.push(`/page/${page.id}`)
   }
 
   let suggestions = []
   if (searchQuery && searchQuery.length) {
     const searchResultBlocks = Object.values(blocks)
       .filter(block => {
-        return !block.parentId && block.text.indexOf(searchQuery) !== -1
+        return block.text.indexOf(searchQuery) !== -1
       })
 
     suggestions = searchResultBlocks.map(block => (
       <PageLink
         pageBlockId={block.id}
-        className="list-group-item list-group-item-action bg-dark text-light"
+        className="search-suggestion"
         key={block.id}
         onClick={clearSearch}
       >
         {block.text}
       </PageLink>
     ))
+
+    const exactMatchExists = searchResultBlocks
+      .find(block => block.text === searchQuery) !== undefined
+    if (!exactMatchExists) {
+      const createPageLink = <li
+                                key={`new-page-${searchQuery}`}
+                                className="search-suggestion"
+                                onClick={createAndNavigateToPage}
+                              >
+                                <b>Create</b> {searchQuery}
+                              </li>
+
+      suggestions.splice(0, 0, createPageLink)
+    }
   }
 
   return (
@@ -79,6 +103,7 @@ const Navbar = ({ blockId }) => {
             className="form-control bg-dark text-light border-secondary"
             placeholder="Find or Create Page"
             onChange={(event) => dispatch(updateSearchQuery({ query: event.target.value }))}
+            value={searchQuery}
           />
         </div>
         {suggestions.length > 0 &&
