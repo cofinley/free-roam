@@ -8,6 +8,12 @@ const linksSlice = createSlice({
       'efgh': ['mnop']
   },
   reducers: {
+    setLinksState: (state, action) => {
+      const newState = action.payload
+      if (newState && typeof newState === 'object') {
+        return newState
+      }
+    },
     setLinks: (state, action) => {
       const { sourceBlockId, linkedBlockIds } = action.payload
       if (!sourceBlockId || !linkedBlockIds || !linkedBlockIds.length) {
@@ -38,5 +44,5 @@ const linksSlice = createSlice({
   }
 })
 
-export const { setLinks } = linksSlice.actions
+export const { setLinksState, setLinks } = linksSlice.actions
 export default linksSlice.reducer

@@ -25,6 +25,12 @@ const blocksSlice = createSlice({
     'a2': { id: 'a2', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
   },
   reducers: {
+    setBlocksState: (state, action) => {
+      const newState = action.payload
+      if (newState && typeof newState === 'object') {
+        return newState
+      }
+    },
     addBlock: (state, action) => {
       const block = action.payload
       if (!block.parentId) {
@@ -98,5 +104,5 @@ const blocksSlice = createSlice({
   }
 })
 
-export const { getBlockByText, addBlock, updateBlock, repositionBlock } = blocksSlice.actions
+export const { setBlocksState, getBlockByText, addBlock, updateBlock, repositionBlock } = blocksSlice.actions
 export default blocksSlice.reducer

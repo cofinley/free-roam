@@ -6,6 +6,12 @@ const filePaneSlice = createSlice({
     favoriteBlockIds: ['abcd', 'efgh']
   },
   reducers: {
+    setFilePaneState: (state, action) => {
+      const newState = action.payload
+      if (newState && 'favoriteBlockIds' in newState) {
+        return newState
+      }
+    },
     toggleShortcut: (state, action) => {
       const { blockId } = action.payload
       const index = state.favoriteBlockIds.indexOf(blockId)
@@ -18,5 +24,5 @@ const filePaneSlice = createSlice({
   }
 })
 
-export const { toggleShortcut } = filePaneSlice.actions
+export const { setFilePaneState, toggleShortcut } = filePaneSlice.actions
 export default filePaneSlice.reducer

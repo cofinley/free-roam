@@ -6,6 +6,12 @@ const navbarSlice = createSlice({
     searchQuery: ''
   },
   reducers: {
+    setNavbarState: (state, action) => {
+      const newState = action.payload
+      if (newState && 'searchQuery' in newState) {
+        return newState
+      }
+    },
     updateSearchQuery: (state, action) => {
       const { query } = action.payload
       state.searchQuery = query
@@ -13,5 +19,5 @@ const navbarSlice = createSlice({
   }
 })
 
-export const { updateSearchQuery, removeShortcut } = navbarSlice.actions
+export const { setNavbarState, updateSearchQuery, removeShortcut } = navbarSlice.actions
 export default navbarSlice.reducer

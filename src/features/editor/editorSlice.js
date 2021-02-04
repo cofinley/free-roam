@@ -10,11 +10,17 @@ const editorSlice = createSlice({
     }
   },
   reducers: {
+    setEditorState: (state, action) => {
+      const newState = action.payload
+      if (newState && 'focusedBlock' in newState) {
+        return newState
+      }
+    },
     updateFocusedBlock: (state, action) => {
       state.focusedBlock = action.payload
     }
   }
 })
 
-export const { updateFocusedBlock } = editorSlice.actions
+export const { setEditorState, updateFocusedBlock } = editorSlice.actions
 export default editorSlice.reducer

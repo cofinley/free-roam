@@ -6,6 +6,12 @@ const viewPaneSlice = createSlice({
     blockIds: ['abcd']
   },
   reducers: {
+    setViewPaneState: (state, action) => {
+      const newState = action.payload
+      if (newState && 'blockIds' in newState) {
+        return newState
+      }
+    },
     pushBlock: (state, action) => {
       const { blockId } = action.payload
       if (!state.blockIds.includes(blockId)) {
@@ -22,5 +28,5 @@ const viewPaneSlice = createSlice({
   }
 })
 
-export const { pushBlock, popBlock } = viewPaneSlice.actions
+export const { setViewPaneState, pushBlock, popBlock } = viewPaneSlice.actions
 export default viewPaneSlice.reducer
