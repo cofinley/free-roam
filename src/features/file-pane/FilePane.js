@@ -1,15 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { StarFill } from "react-bootstrap-icons";
 
 import './file-pane.scss'
 
-import { addBlock, BlockModel } from '../block/blockSlice'
 import PageLink from '../links/PageLink'
 
 const FilePane = props => {
 
-  const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
   const favoriteBlockIds = useSelector(state => state.filePane.favoriteBlockIds)
 
@@ -29,7 +28,8 @@ const FilePane = props => {
   return (
     <div className="file-pane">
       <Link to="/"><h2 className="text-light text-center">Free-roam</h2></Link>
-      <button className="btn btn-dark mx-auto" type="button" onClick={() => dispatch(addBlock(BlockModel({})))}>New Page</button>
+      <hr />
+      <h5><StarFill color="white" width="15px" style={{ marginRight: "10px" }} />Shortcuts</h5>
       <div className="list-group list-group-flush mt-3">
         {pageListItems}
       </div>
