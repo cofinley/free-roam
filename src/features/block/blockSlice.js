@@ -100,9 +100,24 @@ const blocksSlice = createSlice({
           }
         }
       }
+    },
+    makeSibling: (state, action) => {
+      const { firstSiblingBlockId, secondSiblingBlockId } = action.payload
+      const firstSibling = state[firstSiblingBlockId]
+      if (firstSibling.parentId) {
+        const secondSibling = state[secondSiblingBlockId]
+        if (secondSibling.parentId) {
+          const secondSiblingParent = state[secondSibling.parentId]
+          const secondSiblingIndex = secondSiblingParent.childrenIds.indexOf(secondSiblingBlockId)
+          secondSiblingParent.childrenIds.splice(secondSiblingIndex, 1)
+        }
+        const firstSiblingParent = state[firstSibling.parentId]
+        const firstSiblingIndex = firstSiblingParent.childrenIds.indexOf(firstSiblingBlockId)
+        state[firstSiblingParent.id].childrenIds.splice(firstSiblingIndex+1, 0, secondSiblingBlockId)
+      }
     }
   }
 })
 
-export const { setBlocksState, getBlockByText, addBlock, updateBlock, repositionBlock } = blocksSlice.actions
+export const { setBlocksState, getBlockByText, addBlock, updateBlock, repositionBlock, makeSibling } = blocksSlice.actions
 export default blocksSlice.reducer

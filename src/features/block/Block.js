@@ -6,7 +6,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 
 import './block.scss'
 
-import { addBlock, updateBlock, repositionBlock, BlockModel } from './blockSlice'
+import { addBlock, updateBlock, repositionBlock, BlockModel, makeSibling } from './blockSlice'
 import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
@@ -36,7 +36,7 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
     const jsxMdArray = linkedPlaintext
       .map(element => {
       if (typeof element === 'string') {
-        const jsx = compiler(element, { forceInline: true })
+        const jsx = compiler(element)
         const keyedJsx = React.cloneElement(jsx, { key: element })
         return keyedJsx
       }
@@ -77,6 +77,18 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
         dispatch(repositionBlock({ blockId: block.id, direction: 'forward' }))
       }
       dispatch(updateFocusedBlock({ blockId: block.id, isMain, caretPos: event.target.selectionStart }))
+    } else if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      const start = event.target.selectionStart
+      const textToCut = block.text.substring(start)
+      const newBlock = BlockModel({ text: textToCut, parentId: block.parentId })
+      dispatch(addBlock(newBlock))
+      dispatch(makeSibling({ firstSiblingBlockId: block.id, secondSiblingBlockId: newBlock.id }))
+      dispatch(updateFocusedBlock({ blockId: newBlock.id, isMain, caretPos: 0 }))
+
+      const remainingText = block.text.substring(0, start)
+      dispatch(updateBlock({ blockId: block.id, text: remainingText }))
+      event.target.value = remainingText
     }
   }
 
