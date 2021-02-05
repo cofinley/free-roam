@@ -1,16 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// State: { destination: [source1, source2] }
+/* State:
+{
+  to: { destination: [source1, source2] }},
+  from: { source1: [destination], source2: [destination] }}
+}
+
+'to' holds backlinks, 'from' holds source blocks and helps build 'to'
+*/
 
 const linksSlice = createSlice({
   name: 'links',
   initialState: {
+    to: {
       'efgh': ['mnop']
+    },
+    from: {
+      'mnop': ['efgh']
+    }
   },
   reducers: {
     setLinksState: (state, action) => {
       const newState = action.payload
-      if (newState && typeof newState === 'object') {
+      if (newState && 'to' in newState && 'from' in newState) {
         return newState
       }
     },
@@ -19,27 +31,38 @@ const linksSlice = createSlice({
       if (!sourceBlockId || !linkedBlockIds || !linkedBlockIds.length) {
         return
       }
-      linkedBlockIds.map(linkedBlockId => {
-        if (!(linkedBlockId in state)) {
-          state[linkedBlockId] = []
-        }
-        if (!state[linkedBlockId].includes(sourceBlockId)) {
-          state[linkedBlockId].push(sourceBlockId)
-        }
-        return true
-      })
-      const blockIdsLinkedBySourceBlockId = Object.entries(state)
-        .filter(([linkedBlockId, sourceBlockIds]) => sourceBlockIds.includes(sourceBlockId))
 
-      const blockIdsNoLongerLinkedBySourceBlockId = blockIdsLinkedBySourceBlockId
-        .filter(([linkedBlockId, sourceBlockIds]) => !linkedBlockIds.includes(linkedBlockId))
+      let addedLinks
 
-      blockIdsNoLongerLinkedBySourceBlockId
-        .map(([linkedBlockId, sourceBlockIds]) => {
-          const index = state[linkedBlockId].indexOf(sourceBlockId)
-          state[linkedBlockId].splice(index, 1)
+      if (sourceBlockId in state.from) {
+        if (JSON.stringify(state.from[sourceBlockId].sort()) === JSON.stringify(linkedBlockIds.sort())) {
+          return
+        }
+
+        const removedLinks = state.from[sourceBlockId].filter(destinationBlockId => !linkedBlockIds.includes(destinationBlockId))
+        if (removedLinks.length) {
+          removedLinks.map(destinationBlockId => {
+            state.to[destinationBlockId] = state.to[destinationBlockId].filter(_sourceBlockId => sourceBlockId !== _sourceBlockId)
+            return true
+          })
+        }
+
+        addedLinks = linkedBlockIds.filter(destinationBlockId => !state.from[sourceBlockId].includes(destinationBlockId))
+      } else {
+        addedLinks = linkedBlockIds
+      }
+
+      if (addedLinks.length) {
+        addedLinks.map(destinationBlockId => {
+          if (!(destinationBlockId in state.to)) {
+            state.to[destinationBlockId] = []
+          }
+          state.to[destinationBlockId].push(sourceBlockId)
           return true
         })
+      }
+
+      state.from[sourceBlockId] = linkedBlockIds
     }
   }
 })

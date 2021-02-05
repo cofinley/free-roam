@@ -15,6 +15,7 @@ import { updateFocusedBlock } from '../editor/editorSlice'
 const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
+  const linksFrom = useSelector(state => state.links.from)
   const focusedBlock = useSelector(state => state.editor.focusedBlock)
   const [editing, setEditing] = useState(focusedBlock.isMain === isMain && focusedBlock.blockId === block.id)
 
@@ -60,7 +61,13 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
         </PageLink>
       )
     })
-    dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: Array.from(links)}))
+    const linksArray = Array.from(links)
+    const blockInFromLinks = block.id in linksFrom
+    if (linksArray.length) {
+      if (!(blockInFromLinks) || JSON.stringify(linksArray.sort()) !== JSON.stringify(linksFrom[block.id].sort())) {
+        dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: linksArray }))
+      }
+    }
     return jsxArray
   }
 
