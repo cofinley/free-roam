@@ -1,14 +1,14 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from "react-router-dom"
+import { Star, StarFill, Search as SearchIcon } from 'react-bootstrap-icons'
 
 import './navbar.scss'
 
-import { Star, StarFill, Search } from 'react-bootstrap-icons'
 import { updateSearchQuery } from './navbarSlice'
 import { toggleShortcut } from '../file-pane/filePaneSlice'
-import PageLink from '../links/PageLink'
 import { BlockModel, addBlock } from '../block/blockSlice'
+import Search from '../search/Search'
 
 const Navbar = ({ blockId }) => {
   const dispatch = useDispatch()
@@ -58,45 +58,12 @@ const Navbar = ({ blockId }) => {
     history.push(`/page/${page.id}`)
   }
 
-  let suggestions = []
-  if (searchQuery && searchQuery.length) {
-    const searchResultBlocks = Object.values(blocks)
-      .filter(block => {
-        return block.text.indexOf(searchQuery) !== -1
-      })
-
-    suggestions = searchResultBlocks.map(block => (
-      <PageLink
-        pageBlockId={block.id}
-        className="search-suggestion"
-        key={block.id}
-        onClick={clearSearch}
-      >
-        {block.text}
-      </PageLink>
-    ))
-
-    const exactMatchExists = searchResultBlocks
-      .find(block => block.text === searchQuery) !== undefined
-    if (!exactMatchExists) {
-      const createPageLink = <li
-                                key={`new-page-${searchQuery}`}
-                                className="search-suggestion"
-                                onClick={createAndNavigateToPage}
-                              >
-                                <b>Create</b> {searchQuery}
-                              </li>
-
-      suggestions.splice(0, 0, createPageLink)
-    }
-  }
-
   return (
     <div className="navbar">
-      <div className="navbar__search">
+      <div className="search-container">
         <div className="input-group">
           <div className="input-group-prepend">
-            <span className="input-group-text bg-dark text-dark border-secondary"><Search color="white"/></span>
+            <span className="input-group-text bg-dark text-dark border-secondary"><SearchIcon color="white" /></span>
           </div>
           <input
             type="text"
@@ -106,13 +73,7 @@ const Navbar = ({ blockId }) => {
             value={searchQuery}
           />
         </div>
-        {suggestions.length > 0 &&
-          <div className="navbar__search-results">
-            <ul className="list-group list-group-flush">
-              {suggestions}
-            </ul>
-          </div>
-        }
+        <Search query={searchQuery} onResultClick={clearSearch} allowCreation onCreateClick={createAndNavigateToPage}/>
       </div>
       {favoriteButton !== undefined &&
         <button className="btn btn--toggle-favorite" onClick={toggleFavorite}>{favoriteButton}</button>

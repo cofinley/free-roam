@@ -3,19 +3,10 @@
 .navbar {
     display: flex;
     justify-content: flex-end !important;
-}
 
-.navbar__search {
-    display: flex;
-    flex-direction: column;
-    flex: 0 1 300px;
-    position: relative;
-}
-
-.navbar__search-results {
-    position: absolute;
-    width: 100%;
-    top: 40px;
+    .search-results {
+        top: 40px;
+    }
 }
 
 .btn--toggle-favorite {
@@ -26,17 +17,5 @@
 
     &:focus {
         box-shadow: none;
-    }
-}
-
-.search-suggestion {
-    @extend .list-group-item;
-    @extend .list-group-item-action;
-    @extend .bg-dark;
-    @extend .text-light;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #1d2124 !important;
     }
 }

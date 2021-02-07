@@ -6,7 +6,7 @@ import './link.scss'
 
 import { pushBlock } from '../view-pane/viewPaneSlice'
 
-const PageLink = ({ pageBlockId, children, noStyling, ...rest }) => {
+const PageLink = ({ pageBlockId, children, noStyling, afterClick, ...rest }) => {
   const dispatch = useDispatch()
   const to = `/page/${pageBlockId}`
 
@@ -14,6 +14,9 @@ const PageLink = ({ pageBlockId, children, noStyling, ...rest }) => {
     if (event.shiftKey) {
       event.preventDefault()
       dispatch(pushBlock({ blockId: pageBlockId }))
+    }
+    if (afterClick) {
+      afterClick()
     }
   }
 
