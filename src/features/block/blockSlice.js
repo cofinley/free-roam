@@ -8,7 +8,9 @@ export const BlockModel = ({id = uuidv4(), parentId = null, text, childrenIds = 
     id,
     parentId,
     text,
-    childrenIds
+    childrenIds,
+    created: Date.now(),
+    updated: null
   }
 )
 
@@ -58,6 +60,7 @@ const blocksSlice = createSlice({
         block.childrenIds = childrenIds || block.childrenIds
         const currentText = block.text
         block.text = text || currentText
+        block.updated = Date.now()
         state[blockId] = block
         if (!block.parentId) {
           blocksSlice.caseReducers.changeTitle(state, { payload: { currentTitle: currentText, newTitle: text } })
