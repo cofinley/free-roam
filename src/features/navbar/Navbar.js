@@ -73,7 +73,13 @@ const Navbar = ({ blockId }) => {
             value={searchQuery}
           />
         </div>
-        <Search query={searchQuery} onResultClick={clearSearch} allowCreation onCreateClick={createAndNavigateToPage}/>
+        <Search
+          query={searchQuery}
+          useLinks
+          onResultClick={clearSearch}
+          allowCreation
+          onCreateClick={createAndNavigateToPage}
+        />
       </div>
       {favoriteButton !== undefined &&
         <button className="btn btn--toggle-favorite" onClick={toggleFavorite}>{favoriteButton}</button>

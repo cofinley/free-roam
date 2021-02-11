@@ -5,7 +5,7 @@ import './search.scss'
 
 import PageLink from '../links/PageLink'
 
-const Search = ({ query, onResultClick, onlyPages, allowCreation, onCreateClick }) => {
+const Search = ({ query, useLinks, onResultClick, onlyPages, allowCreation, onCreateClick }) => {
   const blocks = useSelector(state => state.blocks)
 
   let suggestions = []
@@ -18,16 +18,30 @@ const Search = ({ query, onResultClick, onlyPages, allowCreation, onCreateClick 
         return block.text.indexOf(query) !== -1
       })
 
-    suggestions = searchResultBlocks.map(block => (
-      <PageLink
-        pageBlockId={block.id}
-        className="search-result"
-        key={block.id}
-        afterClick={onResultClick}
-      >
-        {block.text}
-      </PageLink>
-    ))
+    suggestions = searchResultBlocks.map(block => {
+      if (useLinks) {
+        return (
+          <PageLink
+            pageBlockId={block.id}
+            className="search-result"
+            key={block.id}
+            afterClick={onResultClick}
+          >
+            {block.text}
+          </PageLink>
+        )
+      } else {
+        return (
+          <li
+            className="search-result"
+            key={block.id}
+            onMouseDown={onResultClick.bind(null, block)}
+          >
+            {block.text}
+          </li>
+        )
+      }
+    })
 
     if (allowCreation) {
       const exactMatchExists = searchResultBlocks
