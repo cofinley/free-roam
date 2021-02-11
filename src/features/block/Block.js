@@ -90,16 +90,19 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
       dispatch(updateFocusedBlock({ blockId: block.id, isMain, caretPos: event.target.selectionStart }))
     } else if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
-      const start = event.target.selectionStart
-      const textToCut = block.text.substring(start)
-      const newBlock = BlockModel({ text: textToCut, parentId: block.parentId })
+      let newBlockText = ''
+      if (event.target.selectionStart !== event.target.value.length) {
+        // In-text Enter, cut
+        const start = event.target.selectionStart
+        newBlockText = block.text.substring(start)
+        const remainingText = block.text.substring(0, start)
+        dispatch(updateBlock({ blockId: block.id, text: remainingText }))
+        event.target.value = remainingText
+      }
+      const newBlock = BlockModel({ text: newBlockText, parentId: block.parentId })
       dispatch(addBlock(newBlock))
       dispatch(makeSibling({ firstSiblingBlockId: block.id, secondSiblingBlockId: newBlock.id }))
       dispatch(updateFocusedBlock({ blockId: newBlock.id, isMain, caretPos: 0 }))
-
-      const remainingText = block.text.substring(0, start)
-      dispatch(updateBlock({ blockId: block.id, text: remainingText }))
-      event.target.value = remainingText
     } else {
       if (event.key === '[') {
         const caretPos = event.target.selectionStart
@@ -131,8 +134,9 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
     }
   }
 
-  const insertPageTitleAtCursor = block => {
-    const title = block.text
+  const insertPageTitleAtCursor = (blockToInsert, event) => {
+    event.preventDefault()
+    const title = blockToInsert.text
     const value = textarea.current.value
     const caretPos = textarea.current.selectionStart
     const firstBracketPat = /\[\[(?!.*\]\])/gm
@@ -145,11 +149,11 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
     textarea.current.value = newValue
     setSearching(false)
     setQuery(null)
+    dispatch(updateBlock({ blockId: block.id, text: newValue }))
   }
 
   const save = event => {
-    setEditing(false)
-    if (block.text !== event.target.value) {
+    if (!searching && block.text !== event.target.value) {
       dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
     }
   }
@@ -185,7 +189,8 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
               autoFocus
               onFocus={setCaretPos}
               onKeyDown={onKeyDown}
-              onBlur={save}
+              onChange={save}
+              onBlur={() => setEditing(false)}
               defaultValue={block.text}
             />
             {searching &&
