@@ -1,0 +1,19 @@
+.view-pane {
+    min-width: 300px;
+    width: 300px;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.view-pane__section {
+    padding: 20px;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid gray;
+    }
+}
+
+.btn-close {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}

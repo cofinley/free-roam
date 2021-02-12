@@ -1,0 +1,21 @@
+@import "../../index.scss";
+
+.navbar {
+    display: flex;
+    justify-content: flex-end !important;
+
+    .search-results {
+        top: 40px;
+    }
+}
+
+.btn--toggle-favorite {
+    padding: 0 0 5px;
+    width: 30px;
+    box-shadow: none;
+    margin-left: 10px;
+
+    &:focus {
+        box-shadow: none;
+    }
+}

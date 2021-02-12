@@ -1,0 +1,27 @@
+@import "../../index.scss";
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-result {
+    @extend .list-group-item;
+    @extend .list-group-item-action;
+    @extend .bg-dark;
+    @extend .text-light;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #1d2124 !important;
+    }
+}

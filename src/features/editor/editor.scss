@@ -1,0 +1,48 @@
+.breadcrumbs {
+    margin-bottom: 20px;
+}
+
+.breadcrumbs > * {
+    &::after {
+        content: "›";
+        margin: 0 10px;
+    }
+
+    &:last-child:after {
+        content: "";
+    }
+}
+
+.editor--child {
+    padding-left: 6px;
+}
+
+.editor__children {
+    margin-left: 20px;
+    display: flex;
+
+    .editor--page > & {
+        margin-left: -20px;
+    }
+}
+
+.editor__children__container {
+    width: 100%;
+}
+
+.editor__children__thread-line {
+    position: relative;
+    width: 7px;
+    left: -6px;
+    cursor: pointer;
+    border-right: 1px solid white;
+
+    &:hover {
+        left: -5px;
+        border-right: 3px solid white;
+    }
+}
+
+.references {
+    margin-top: 25px;
+}
