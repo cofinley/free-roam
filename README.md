@@ -1,6 +1,26 @@
-# Getting Started with Create React App
+# Free-roam
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## What
+
+A [Roam](https://roamresearch.com) clone. One that is:
+
+- free
+- offline
+- not a cult
+
+## Why
+
+- I wanted to learn React
+- I don't like apps which slap on cloud storage to justify SaaS monthly pricing models
+- "That doesn't sound too difficult" famous last words
+
+## Notes
+
+Currently a work in progress. See [issues](https://github.com/cofinley/free-roam/issues) for work left to do.
+
+---
+
+React create-app boilerplate below
 
 ## Available Scripts
 
