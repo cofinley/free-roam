@@ -163,7 +163,6 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
           setSearching(false)
         }
     } else if (event.key === 'Backspace') {
-      event.preventDefault()
       if (textarea.current.selectionStart !== 0) {
         return
       }
@@ -180,6 +179,7 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
       dispatch(updateBlock({ blockId: destinationBlock.id, text: destinationBlock.text + block.text }))
       dispatch(removeBlock({ blockId: block.id }))
       dispatch(updateFocusedBlock({ blockId: destinationBlock.id, isMain, caretPos: newCaretPos }))
+      event.preventDefault()
     } else if (searching && titleCharAllowed(event.keyCode)) {
       setQuery(query + event.key)
     }
