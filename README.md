@@ -1,5 +1,7 @@
 # Free-roam
 
+Currently a work in progress. See [issues](https://github.com/cofinley/free-roam/issues) for work left to do.
+
 ## What
 
 A [Roam](https://roamresearch.com) clone. One that is:
@@ -16,11 +18,15 @@ A [Roam](https://roamresearch.com) clone. One that is:
 
 ## Notes
 
-Currently a work in progress. See [issues](https://github.com/cofinley/free-roam/issues) for work left to do.
+See current releases to try it out. Just download the bundle, unzip, open the `index.html` and enjoy! Save and load your data in-between sessions.
+
+I'm still figuring out best ways to do this without delving into React Native/Electron but it may come to that for less friction on saving/backing up.
+
+For now, it's the user's job to save their data, but the app will also warn on tab/window close in case there is unsaved work.
 
 ---
 
-React create-app boilerplate below
+**React create-app boilerplate below**
 
 ## Available Scripts
 
