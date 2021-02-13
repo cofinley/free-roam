@@ -70,7 +70,7 @@ const blocksSlice = createSlice({
         block.parentId = parentId || block.parentId
         block.childrenIds = childrenIds || block.childrenIds
         const currentText = block.text
-        block.text = text || currentText
+        block.text = typeof text === 'string' ? text : currentText
         block.updated = Date.now()
         state[blockId] = block
         if (!block.parentId) {
