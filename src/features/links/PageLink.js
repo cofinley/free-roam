@@ -18,6 +18,7 @@ const PageLink = ({ pageBlockId, children, noStyling, afterClick, ...rest }) => 
     if (afterClick) {
       afterClick()
     }
+    event.stopPropagation()
   }
 
   return (

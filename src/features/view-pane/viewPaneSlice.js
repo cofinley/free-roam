@@ -20,10 +20,7 @@ const viewPaneSlice = createSlice({
     },
     popBlock: (state, action) => {
       const { blockId } = action.payload
-      const index = state.blockIds.indexOf(blockId)
-      if (index > -1) {
-        state.blockIds.splice(blockId, 1)
-      }
+      state.blockIds = state.blockIds.filter(openBlockId => openBlockId !== blockId)
     }
   }
 })

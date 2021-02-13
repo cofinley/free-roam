@@ -22,11 +22,13 @@ const ViewPane = props => {
       <div
         key={block.id}
         className="view-pane__section"
-        onClick={closeBlock.bind(null, block.id)}
       >
         <div className="d-flex justify-content-between align-items-center">
           Outline of:
-          <X className="btn-close" />
+          <X
+            className="btn-close"
+            onClick={closeBlock.bind(null, block.id)}
+          />
         </div>
         <Editor blockId={block.id} isRoot isMain={false} />
       </div>
