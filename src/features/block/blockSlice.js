@@ -45,6 +45,17 @@ const blocksSlice = createSlice({
       }
       state[block.id] = block
     },
+    removeBlock: (state, action) => {
+      const { blockId } = action.payload
+      const block = state[blockId]
+      // Only allowed on leaves
+      if (block.childrenIds.length) {
+        return
+      }
+      const parentBlock = state[block.parentId]
+      state[block.parentId].childrenIds = parentBlock.childrenIds.filter(childBlockId => childBlockId !== blockId)
+      delete state[blockId]
+    },
     changeParent: (state, action) => {
       const { blockId, parentId } = action.payload
       const block = state[blockId]
@@ -122,5 +133,13 @@ const blocksSlice = createSlice({
   }
 })
 
-export const { setBlocksState, getBlockByText, addBlock, updateBlock, repositionBlock, makeSibling } = blocksSlice.actions
+export const {
+  setBlocksState,
+  getBlockByText,
+  addBlock,
+  removeBlock,
+  updateBlock,
+  repositionBlock,
+  makeSibling
+} = blocksSlice.actions
 export default blocksSlice.reducer

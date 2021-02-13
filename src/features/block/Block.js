@@ -6,7 +6,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 
 import './block.scss'
 
-import { addBlock, updateBlock, repositionBlock, BlockModel, makeSibling } from './blockSlice'
+import { addBlock, removeBlock, updateBlock, repositionBlock, BlockModel, makeSibling } from './blockSlice'
 import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
@@ -75,8 +75,53 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
     return jsxArray
   }
 
-  const edit = event => {
-    setEditing(true)
+  const titleCharAllowed = keyCode => (
+    // Numbers and letters
+    (48 <= keyCode && keyCode < 91)
+    // Numpad numbers and symbols
+    || (96 <= keyCode && keyCode < 112 && keyCode !== 108)
+    // Symbols
+    || (186 <= keyCode)
+  )
+
+  const getPage = _block => {
+    if (!_block.parentId) {
+      return _block
+    }
+    const parentBlock = blocks[_block.parentId]
+    return getPage(parentBlock)
+  }
+
+  const getPrevSibling = _block => {
+    const parentBlock = blocks[_block.parentId]
+    const blockIndex = parentBlock.childrenIds.indexOf(_block.id)
+    if (blockIndex < 1) {
+      return null
+    }
+    const prevSiblingBlock = blocks[parentBlock.childrenIds[blockIndex - 1]]
+    return prevSiblingBlock
+  }
+
+  const getLastChildLeaf = _block => {
+    if (!_block.childrenIds.length) {
+      return _block
+    }
+    const lastChildBlock = blocks[_block.childrenIds.slice(-1)]
+    return getLastChildLeaf(lastChildBlock)
+  }
+
+  const getNextBlockUp = _block => {
+    const prevSibling = getPrevSibling(_block)
+    if (prevSibling) {
+      if (prevSibling.childrenIds.length) {
+        return getLastChildLeaf(prevSibling)
+      } else {
+        return prevSibling
+      }
+    } else {
+      const parentBlock = blocks[_block.parentId]
+      return parentBlock
+    }
   }
 
   const onKeyDown = event => {
@@ -103,8 +148,7 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
       dispatch(addBlock(newBlock))
       dispatch(makeSibling({ firstSiblingBlockId: block.id, secondSiblingBlockId: newBlock.id }))
       dispatch(updateFocusedBlock({ blockId: newBlock.id, isMain, caretPos: 0 }))
-    } else {
-      if (event.key === '[') {
+    } else if (event.key === '[') {
         const caretPos = event.target.selectionStart
         const value = event.target.value
         const prevChar = value.charAt(caretPos - 1)
@@ -118,19 +162,26 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
         } else {
           setSearching(false)
         }
-      } else {
-        const titleCharAllowed = keyCode => (
-          // Numbers and letters
-          (48 <= keyCode && keyCode < 91)
-          // Numpad numbers and symbols
-          || (96 <= keyCode && keyCode < 112 && keyCode !== 108)
-          // Symbols
-          || (186 <= keyCode)
-        )
-        if (searching && titleCharAllowed(event.keyCode)) {
-          setQuery(query + event.key)
-        }
+    } else if (event.key === 'Backspace') {
+      event.preventDefault()
+      if (textarea.current.selectionStart !== 0) {
+        return
       }
+      if (block.childrenIds.length) {
+        return
+      }
+      const pageBlock = getPage(block)
+      const isFirstPageChild = block.parentId === pageBlock.id && pageBlock.childrenIds[0] === block.id
+      if (isFirstPageChild) {
+        return
+      }
+      const destinationBlock = getNextBlockUp(block)
+      const newCaretPos = destinationBlock.text.length
+      dispatch(updateBlock({ blockId: destinationBlock.id, text: destinationBlock.text + block.text }))
+      dispatch(removeBlock({ blockId: block.id }))
+      dispatch(updateFocusedBlock({ blockId: destinationBlock.id, isMain, caretPos: newCaretPos }))
+    } else if (searching && titleCharAllowed(event.keyCode)) {
+      setQuery(query + event.key)
     }
   }
 
@@ -158,8 +209,25 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
     }
   }
 
+  const isFocusedBlock = focusedBlock.blockId
+    && focusedBlock.blockId === block.id
+    && focusedBlock.isMain === isMain
+    && focusedBlock.caretPos
+
   const setCaretPos = event => {
-    event.target.selectionStart = focusedBlock.caretPos
+    if (isFocusedBlock) {
+      event.target.selectionStart = focusedBlock.caretPos
+    }
+  }
+
+  if (isFocusedBlock) {
+    if (!editing && !textarea.current) {
+      setEditing(true)
+    }
+    if (editing && textarea.current) {
+      textarea.current.focus()
+      textarea.current.selectionStart = focusedBlock.caretPos
+    }
   }
 
   const classes = ['block-text']
@@ -205,7 +273,7 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
         :
         <span
           className={className}
-          onClick={edit}
+          onClick={() => setEditing(true)}
         >
           {rendered()}
         </span>
