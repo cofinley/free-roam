@@ -1,6 +1,7 @@
 import React from 'react'
-
 import { CaretRightFill, CaretDownFill } from 'react-bootstrap-icons'
+
+import './block-actions.scss'
 
 import PageLink from '../links/PageLink'
 

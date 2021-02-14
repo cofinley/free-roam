@@ -7,13 +7,12 @@ import TextareaAutosize from 'react-textarea-autosize'
 import './block.scss'
 
 import { addBlock, removeBlock, updateBlock, repositionBlock, BlockModel, makeSibling } from './blockSlice'
-import BlockActions from './BlockActions'
 import { setLinks } from '../links/linksSlice'
 import PageLink from '../links/PageLink'
 import { updateFocusedBlock } from '../editor/editorSlice'
-import Search from '../search/Search';
+import Search from '../search/Search'
 
-const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
+const Block = ({ block, isMain, isTitle }) => {
   const dispatch = useDispatch()
   const textarea = useRef(null)
   const blocks = useSelector(state => state.blocks)
@@ -241,13 +240,6 @@ const Block = ({ block, isMain, isTitle, foldBlock, setFoldBlock }) => {
 
   return (
       <div className="block">
-      {!isTitle &&
-        <BlockActions
-          block={block}
-          foldBlock={foldBlock}
-          setFoldBlock={setFoldBlock}
-        />
-      }
       {editing
         ?
           <div className="block__autocomplete-container">

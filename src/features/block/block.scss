@@ -4,11 +4,6 @@
     display: flex;
 }
 
-.block-actions-container {
-    margin-right: 10px;
-    display: flex;
-}
-
 .block-text {
     @extend .text-light;
     overflow: hidden;
@@ -31,21 +26,6 @@
     @extend .h1;
     @extend .d-block;
     margin-bottom: 32px;
-}
-
-.block-actions {
-    cursor: pointer;
-}
-
-.block-actions--toggle {
-    opacity: 0;
-    font-size: 14px;
-    transition: opacity 0.1s ease-in-out;
-    margin-right: 3px;
-
-    .block-actions-container:hover & {
-        opacity: 1;
-    }
 }
 
 .block__autocomplete-container {

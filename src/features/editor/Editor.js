@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 
 import './editor.scss'
@@ -6,18 +6,25 @@ import './editor.scss'
 import References from './References'
 import Block from '../block/Block'
 import Breadcrumbs from './Breadcrumbs'
+import BlockActions from '../block-actions/BlockActions';
 
-const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
+const Editor = ({ blockId, isRoot, isMain, fold = false }) => {
   const blocks = useSelector(state => state.blocks)
   const block = blocks[blockId]
-  const [foldBlock, setFoldBlock] = useState(false)
+  const [foldBlock, setFoldBlock] = useState(fold)
   const [foldNextLevel, setFoldNextLevel] = useState(false)
+
+  // Make sure fold prop informs the foldBlock hook state on update
+  useEffect(() => {
+    setFoldBlock(fold);
+   }, [fold])
 
   if (!block) {
     return <h1 className="text-light">Page not found</h1>
   }
 
   const isPage = block.parentId === null
+  const isTitle = isPage && isRoot
 
   const children = block.childrenIds.map(childBlockId => (
     <Editor
@@ -25,7 +32,7 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
       isRoot={false}
       isMain={isMain}
       blockId={childBlockId}
-      stopRecursion={foldNextLevel}
+      fold={foldNextLevel}
     />
   ))
 
@@ -34,17 +41,27 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
       {isRoot && !isPage &&
         <Breadcrumbs block={block} />
       }
-      <Block
-        block={block}
-        isTitle={isRoot && isPage}
-        foldBlock={foldBlock}
-        isMain={isMain}
-        setFoldBlock={setFoldBlock}
-      />
-      {!stopRecursion && !foldBlock && children.length > 0 &&
+      <div className="d-flex">
+        {!isTitle &&
+          <BlockActions
+            block={block}
+            foldBlock={foldBlock}
+            setFoldBlock={setFoldBlock}
+          />
+        }
+        <Block
+          block={block}
+          isTitle={isTitle}
+          isMain={isMain}
+        />
+      </div>
+      {!foldBlock && children.length > 0 &&
         <div className="editor__children">
           {block.parentId !== null &&
-            <div className="editor__children__thread-line" onClick={() => setFoldNextLevel(!foldNextLevel)}/>
+            <div
+              className="editor__children__thread-line"
+              onClick={() => setFoldNextLevel(!foldNextLevel)}
+            />
           }
           <div className="editor__children__container">
             {children}
@@ -52,7 +69,11 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
         </div>
       }
       {isRoot &&
-        <References block={block} isMain={isMain} key={block.id} />
+        <References
+          block={block}
+          isMain={isMain}
+          key={block.id}
+        />
       }
     </div>
   )
