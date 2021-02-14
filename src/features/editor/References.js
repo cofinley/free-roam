@@ -8,7 +8,7 @@ const References = ({ block, isMain }) => {
   const [showUnlinkedRefs, setShowUnlinkedRefs] = useState(false)
   const links = useSelector(state => state.links)
   const blocks = useSelector(state => state.blocks)
-  const references = links[block.id]
+  const references = links.to[block.id]
 
   const linkedReferences = () => {
     if (block.parentId || !references || !references.length) {
