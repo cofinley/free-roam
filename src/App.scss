@@ -2,3 +2,8 @@
   display: flex;
   min-height: 100vh;
 }
+
+.pane {
+  max-height: 100vh;
+  overflow: auto;
+}

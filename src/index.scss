@@ -9,6 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   @extend .text-light;
   @extend .bg-dark;
+  overflow: hidden;
 }
 
 code {

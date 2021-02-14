@@ -3,6 +3,7 @@ import { compiler } from 'markdown-to-jsx'
 import reactStringReplace from "react-string-replace";
 import { useDispatch, useSelector } from 'react-redux'
 import TextareaAutosize from 'react-textarea-autosize'
+import getCaretCoordinates from 'textarea-caret'
 
 import './block.scss'
 
@@ -21,6 +22,7 @@ const Block = ({ block, isMain, isTitle }) => {
   const [editing, setEditing] = useState(focusedBlock.isMain === isMain && focusedBlock.blockId === block.id)
   const [searching, setSearching] = useState(false)
   const [query, setQuery] = useState(false)
+  const [cursorCaret, setCursorCaret] = useState({ offsetX: null, offsetY: null, width: null })
 
   const linkToPage = text => {
     const foundPage = Object.values(blocks)
@@ -202,6 +204,57 @@ const Block = ({ block, isMain, isTitle }) => {
     dispatch(updateBlock({ blockId: block.id, text: newValue }))
   }
 
+  const edit = event => {
+    const clickPosX = event.clientX
+    const clickPosY = event.clientY
+    const blockX = event.currentTarget.offsetLeft
+    const blockY = event.currentTarget.offsetTop
+    const offsetX = clickPosX - blockX
+    const offsetY = clickPosY - blockY
+    const width = event.currentTarget.offsetWidth
+    setCursorCaret({ offsetX, offsetY, width })
+    setEditing(true)
+  }
+
+  const translateCaretPos = (_textarea) => {
+    if (!_textarea) {
+      return
+    }
+
+    const symbolsToSkip = ['*', '_']
+    const originalText = _textarea.value
+
+    let minDistance = 10000
+    let translatedCaretPos = 0
+    let skippedSymbolIndexes = []
+    for (let caretPos = 0; caretPos <= _textarea.value.length; caretPos++) {
+      const currentChar = _textarea.value.charAt(caretPos)
+      if (symbolsToSkip.includes(currentChar)) {
+        const chars = _textarea.value.split('')
+        chars.splice(caretPos, 1)
+        _textarea.value = chars.join('')
+        skippedSymbolIndexes.push(caretPos)
+        caretPos--
+      }
+      const { left: x, top: y } = getCaretCoordinates(_textarea, caretPos)
+      const distance = Math.sqrt(Math.pow((x - cursorCaret.offsetX), 2) + Math.pow((y - cursorCaret.offsetY), 2))
+      if (distance < minDistance) {
+        minDistance = distance
+        translatedCaretPos = caretPos
+      }
+    }
+
+    _textarea.value = originalText
+    let newCaretPos = translatedCaretPos
+    if (skippedSymbolIndexes.length && skippedSymbolIndexes[0] <= newCaretPos) {
+      newCaretPos += skippedSymbolIndexes.filter(index => index <= translatedCaretPos).length
+    }
+    _textarea.selectionStart = newCaretPos
+    _textarea.selectionEnd = newCaretPos
+
+    setCursorCaret({ offsetX: null, offsetY: null, width: null })
+  }
+
   const save = event => {
     if (!searching && block.text !== event.target.value) {
       dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
@@ -216,6 +269,8 @@ const Block = ({ block, isMain, isTitle }) => {
   const setCaretPos = event => {
     if (isFocusedBlock) {
       event.target.selectionStart = focusedBlock.caretPos
+    } else if (cursorCaret.offsetX !== null) {
+      translateCaretPos(event.target)
     }
   }
 
@@ -265,7 +320,7 @@ const Block = ({ block, isMain, isTitle }) => {
         :
         <span
           className={className}
-          onClick={() => setEditing(true)}
+          onClick={edit}
         >
           {rendered()}
         </span>

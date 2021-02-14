@@ -67,7 +67,7 @@ const FilePane = props => {
   })
 
   return (
-    <div className="file-pane">
+    <div className="pane file-pane">
       <Link to="/"><h2 className="text-light text-center">Free-roam</h2></Link>
       <div className="d-flex justify-content-center">
         <label className="load-button-input mr-3">
