@@ -35,7 +35,7 @@ const ViewPane = props => {
     )
   })
   return (
-    <div className="view-pane">
+    <div className="pane view-pane">
       {viewPaneBlocks}
     </div>
   )
