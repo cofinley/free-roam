@@ -52,7 +52,7 @@ const Editor = ({ blockId, isRoot, isMain, stopRecursion = false }) => {
         </div>
       }
       {isRoot &&
-        <References block={block} isMain={isMain} />
+        <References block={block} isMain={isMain} key={block.id} />
       }
     </div>
   )
