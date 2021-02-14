@@ -47,6 +47,7 @@ const Editor = ({ blockId, isRoot, isMain, fold = false }) => {
             block={block}
             foldBlock={foldBlock}
             setFoldBlock={setFoldBlock}
+            hasChildren={children.length > 0}
           />
         }
         <Block

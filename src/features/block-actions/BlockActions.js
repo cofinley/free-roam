@@ -5,10 +5,10 @@ import './block-actions.scss'
 
 import PageLink from '../links/PageLink'
 
-const BlockActions = ({ block, foldBlock, setFoldBlock }) => {
+const BlockActions = ({ block, hasChildren, foldBlock, setFoldBlock }) => {
   return (
     <div className="block-actions-container">
-      <span className="block-actions block-actions--toggle">
+      <span className={`block-actions block-actions--toggle${hasChildren ? '' : ' hidden'}`}>
         {foldBlock &&
           <CaretRightFill color="white" onClick={() => setFoldBlock(false)} />
         }
@@ -20,7 +20,9 @@ const BlockActions = ({ block, foldBlock, setFoldBlock }) => {
         pageBlockId={block.id}
         noStyling
       >
-        <span className="block-actions block-actions--bullet">•</span>
+        <div className={`block-actions block-actions--bullet${foldBlock && hasChildren ? ' fold' : ''}`}>
+          <span>•</span>
+        </div>
       </PageLink>
     </div>
   )
