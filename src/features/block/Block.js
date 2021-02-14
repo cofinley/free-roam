@@ -236,9 +236,7 @@ const Block = ({ block, isMain, isTitle }) => {
         skippedSymbolIndexes.push(caretPos)
         caretPos--
       }
-      const coordinates = getCaretCoordinates(_textarea, caretPos)
-      const x = coordinates.left
-      const y = coordinates.top
+      const { left: x, top: y } = getCaretCoordinates(_textarea, caretPos)
       const distance = Math.sqrt(Math.pow((x - cursorCaret.offsetX), 2) + Math.pow((y - cursorCaret.offsetY), 2))
       if (distance < minDistance) {
         minDistance = distance
