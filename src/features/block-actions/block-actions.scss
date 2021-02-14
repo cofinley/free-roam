@@ -1,0 +1,38 @@
+.block-actions-container {
+    margin-right: 10px;
+    display: flex;
+}
+
+.block-actions:not(.hidden) {
+    cursor: pointer;
+}
+
+.block-actions--toggle {
+    opacity: 0;
+    font-size: 14px;
+    transition: opacity 0.1s ease-in-out;
+    margin-right: 3px;
+
+    .block-actions-container:hover &:not(.hidden) {
+        opacity: 1;
+    }
+}
+
+.block-actions--bullet {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    top: 7px;
+    left: -2px;
+
+    &.fold {
+        background-color: gray;
+    }
+
+    span {
+        position: relative;
+        top: -8px;
+        left: 2.5px;
+    }
+}
