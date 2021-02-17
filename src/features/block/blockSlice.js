@@ -1,18 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
+
+import { BlockModel } from './blockModel'
 
 const DEFAULT_TEXT = 'Click here to edit'
-
-export const BlockModel = ({id = uuidv4(), parentId = null, text, childrenIds = []}={}) => (
-  {
-    id,
-    parentId,
-    text,
-    childrenIds,
-    created: Date.now(),
-    updated: null
-  }
-)
 
 const blocksSlice = createSlice({
   name: 'blocks',

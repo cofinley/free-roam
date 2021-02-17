@@ -7,7 +7,8 @@ import './navbar.scss'
 
 import { updateSearchQuery } from './navbarSlice'
 import { toggleShortcut } from '../file-pane/filePaneSlice'
-import { BlockModel, addBlock } from '../block/blockSlice'
+import { addBlock } from '../block/blockSlice'
+import { BlockModel } from '../block/blockModel'
 import Search from '../search/Search'
 
 const Navbar = ({ blockId }) => {
