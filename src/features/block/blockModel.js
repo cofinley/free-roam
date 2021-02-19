@@ -4,14 +4,17 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(customParseFormat)
 
-const DAILY_NOTE_FORMAT = 'MMMM Do, YYYY'
+export const DAILY_NOTE_DISPLAY_FORMAT = 'MMMM Do, YYYY'
+export const DAILY_NOTE_STORAGE_FORMAT = 'YYYY-MM-DD'
 
-export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds = [], created = Date.now(), isDailyNote = false } = {}) => {
+export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds = [], created = Date.now(), dailyNote = null } = {}) => {
   const isPage = !parentId
   if (isPage) {
-    const validDailyNoteTitle = dayjs(text, DAILY_NOTE_FORMAT).isValid()
-    if (validDailyNoteTitle) {
-      isDailyNote = true
+    if (!dailyNote) {
+      const dailyNoteTitleDate = dayjs(text, DAILY_NOTE_DISPLAY_FORMAT)
+      if (dailyNoteTitleDate.isValid()) {
+       dailyNote = dailyNoteTitleDate.format(DAILY_NOTE_STORAGE_FORMAT)
+      }
     }
   }
   return {
@@ -21,7 +24,7 @@ export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds =
     childrenIds,
     created,
     updated: null,
-    isDailyNote
+    dailyNote
   }
 }
 

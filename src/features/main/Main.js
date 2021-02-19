@@ -11,25 +11,27 @@ const Main = ({ blockId }) => {
   return (
     <div className="main">
       <Navbar blockId={blockId}/>
-      <Route
-        exact={true}
-        path="/"
-        render={() => (
-          <Editor blockId={null} isRoot isMain />
-        )}
-      />
-      <Route
-        path="/page/:blockId"
-        render={({ match }) => (
-          <Editor blockId={match.params.blockId} isRoot isMain />
-        )}
-      />
-      <Route
-        path="/daily-notes"
-        render={() => (
-          <DailyNotes />
-        )}
-      />
+      <div className="stage">
+        <Route
+          exact={true}
+          path="/"
+          render={() => (
+            <Editor blockId={null} isRoot isMain />
+          )}
+        />
+        <Route
+          path="/page/:blockId"
+          render={({ match }) => (
+            <Editor blockId={match.params.blockId} isRoot isMain />
+          )}
+        />
+        <Route
+          path="/daily-notes"
+          render={() => (
+            <DailyNotes />
+          )}
+        />
+      </div>
     </div>
   )
 }
