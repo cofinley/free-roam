@@ -12,6 +12,10 @@ const Block = ({ block, isMain, isTitle }) => {
   const [cursorCaret, setCursorCaret] = useState({ offsetX: null, offsetY: null, width: null })
 
   const edit = event => {
+    if (block.dailyNote) {
+      // Don't allow daily note date titles to be edited
+      return
+    }
     const clickPosX = event.clientX
     const clickPosY = event.clientY
     const blockX = event.currentTarget.offsetLeft

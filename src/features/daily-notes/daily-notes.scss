@@ -1,0 +1,7 @@
+.daily-notes > .editor {
+    &:not(:last-child) {
+        border-bottom: 1px solid gray;
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+    }
+}

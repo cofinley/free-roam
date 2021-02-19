@@ -188,7 +188,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     <div className="block__autocomplete-container">
       <TextareaAutosize
         ref={textarea}
-        className="block-text block-text--edit"
+        className={`block-text block-text--edit${isTitle ? ' block-text--title': ''}`}
         autoFocus
         onFocus={setCaretPos}
         onKeyDown={onKeyDown}

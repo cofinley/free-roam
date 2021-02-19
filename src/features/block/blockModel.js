@@ -1,15 +1,32 @@
 import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
-export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds = [] } = {}) => (
-  {
+dayjs.extend(customParseFormat)
+
+export const DAILY_NOTE_DISPLAY_FORMAT = 'MMMM Do, YYYY'
+export const DAILY_NOTE_STORAGE_FORMAT = 'YYYY-MM-DD'
+
+export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds = [], created = Date.now(), dailyNote = null } = {}) => {
+  const isPage = !parentId
+  if (isPage) {
+    if (!dailyNote) {
+      const dailyNoteTitleDate = dayjs(text, DAILY_NOTE_DISPLAY_FORMAT)
+      if (dailyNoteTitleDate.isValid()) {
+       dailyNote = dailyNoteTitleDate.format(DAILY_NOTE_STORAGE_FORMAT)
+      }
+    }
+  }
+  return {
     id,
     parentId,
     text,
     childrenIds,
-    created: Date.now(),
-    updated: null
+    created,
+    updated: null,
+    dailyNote
   }
-)
+}
 
 export const getPage = (block, blocks) => {
   if (!block.parentId) {

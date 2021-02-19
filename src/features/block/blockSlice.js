@@ -15,6 +15,8 @@ const blocksSlice = createSlice({
     'uvwx': { id: 'uvwx', parentId: 'mnop', text: "I'm a third layer block", childrenIds: ['a2'] },
     'a1': { id: 'a1', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
     'a2': { id: 'a2', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
+    'a3': BlockModel({ id: 'a3', text: 'February 17th, 2021', childrenIds: ['a4'], created: 1613538000, dailyNote: '2021-02-17' }),
+    'a4': { id: 'a4', parentId: 'a3', text: 'Click here to edit', childrenIds: [] }
   },
   reducers: {
     setBlocksState: (state, action) => {
