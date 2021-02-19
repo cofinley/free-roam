@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 
 import './App.scss'
 
@@ -11,19 +11,7 @@ const App = () => (
   <div className="App">
     <Router>
       <FilePane />
-      <Route
-        exact={true}
-        path="/"
-        render={() => (
-          <Main blockId={null} />
-        )}
-      />
-      <Route
-        path="/page/:blockId"
-        render={({ match }) => (
-          <Main blockId={match.params.blockId} />
-        )}
-      />
+      <Main />
       <ViewPane />
     </Router>
   </div>

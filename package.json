@@ -9,6 +9,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^4.6.0",
+    "dayjs": "^1.10.4",
     "file-saver": "^2.0.5",
     "markdown-to-jsx": "^7.1.1",
     "node-sass": "^4.0.0",

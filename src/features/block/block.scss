@@ -28,6 +28,10 @@
     @extend .h1;
     @extend .d-block;
     margin-bottom: 32px;
+
+    &.block-text--edit {
+        margin-bottom: 29px;
+    }
 }
 
 .block__autocomplete-container {
