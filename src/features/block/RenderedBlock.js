@@ -37,7 +37,7 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
       return (
         <PageLink
           key={`${match}-${i}`}
-          pageBlockId={pageBlock.id}
+          blockId={pageBlock.id}
         >
           {pageBlock.text}
         </PageLink>

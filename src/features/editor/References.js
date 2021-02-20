@@ -15,10 +15,13 @@ const References = ({ block, isMain }) => {
       return
     }
     return references.map(referenceBlockId => {
+      if (!(referenceBlockId in blocks)) {
+        return null
+      }
       const referenceBlock = blocks[referenceBlockId]
       return (
         <div key={referenceBlockId}>
-          <PageLink pageBlockId={referenceBlockId}><h4>{referenceBlock.text}</h4></PageLink>
+          <PageLink blockId={referenceBlockId}><h4>{referenceBlock.text}</h4></PageLink>
           <Editor
             blockId={referenceBlockId}
             isRoot={false}
@@ -38,7 +41,7 @@ const References = ({ block, isMain }) => {
       .filter(otherBlock => otherBlock.parentId && titlePat.test(otherBlock.text))
       .map(otherBlock => (
         <div key={otherBlock.id}>
-          <PageLink pageBlockId={otherBlock.id}>
+          <PageLink blockId={otherBlock.id}>
             <h4>{otherBlock.text}</h4>
           </PageLink>
           <Editor

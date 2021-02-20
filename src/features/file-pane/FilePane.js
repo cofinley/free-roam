@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Calendar3 } from 'react-bootstrap-icons'
+import { Calendar3, Justify } from 'react-bootstrap-icons'
 
 import './file-pane.scss'
 
@@ -15,6 +15,9 @@ const FilePane = props => {
       <div className="list-group list-group-flush mt-3">
         <Link to="/daily-notes" className="list-group-item list-group-item-action bg-dark text-light">
           <Calendar3 color="white" /> Daily Notes
+        </Link>
+        <Link to="/all-pages" className="list-group-item list-group-item-action bg-dark text-light">
+          <Justify color="white" /> All Pages
         </Link>
       </div>
       <hr />

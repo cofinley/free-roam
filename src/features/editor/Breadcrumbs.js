@@ -13,7 +13,14 @@ const Breadcrumbs = ({ block }) => {
       return list.reverse()
     }
     const parentBlock = blocks[parentBlockId]
-    const crumb = <PageLink pageBlockId={parentBlockId} key={parentBlockId} noStyling>{parentBlock.text}</PageLink>
+    const crumb = <PageLink
+      blockId={parentBlockId}
+      key={parentBlockId}
+      isPage={parentBlock.parentId === null}
+      noStyling
+    >
+      {parentBlock.text}
+    </PageLink>
     return breadcrumbs(parentBlock.parentId, list.concat(crumb))
   }
 

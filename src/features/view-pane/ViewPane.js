@@ -4,33 +4,61 @@ import { X } from "react-bootstrap-icons";
 
 import './view-pane.scss'
 
-import { popBlock } from './viewPaneSlice'
+import { popView } from './viewPaneSlice'
 import Editor from '../editor/Editor'
+import PageLink from '../links/PageLink';
+import References from '../editor/References';
 
 const ViewPane = props => {
   const blocks = useSelector(state => state.blocks)
-  const blockIds = useSelector(state => state.viewPane.blockIds)
+  const views = useSelector(state => state.viewPane.views)
   const dispatch = useDispatch()
 
-  const closeBlock = (blockId, event) => {
-    dispatch(popBlock({ blockId }))
+  const closeBlock = (type, blockId, event) => {
+    dispatch(popView({ type, blockId }))
   }
 
-  const viewPaneBlocks = blockIds.map(blockId => {
+  const header = (type, block) => {
+    let output
+    switch (type) {
+      case 'page':
+        output = 'Outline of:'
+        break
+      case 'block':
+        output = 'Block outline of:'
+        break
+      case 'references':
+        output = <span>References to: <PageLink blockId={block.id}>{block.text}</PageLink></span>
+        break
+      default:
+        output = 'Outline of:'
+        break
+    }
+    return output
+  }
+
+  const viewPaneBlocks = views.map(view => {
+    const { type, blockId } = view
+    if (!(blockId in blocks)) {
+      return null
+    }
     const block = blocks[blockId]
     return (
       <div
-        key={block.id}
+        key={`${type}-${block.id}`}
         className="view-pane__section"
       >
         <div className="d-flex justify-content-between align-items-center">
-          Outline of:
+          {header(type, block)}
           <X
             className="btn-close"
-            onClick={closeBlock.bind(null, block.id)}
+            onClick={closeBlock.bind(null, type, block.id)}
           />
         </div>
-        <Editor blockId={block.id} isRoot isMain={false} />
+        { type === 'references'
+          ? <References block={block} isMain />
+          : <Editor blockId={block.id} isRoot isMain={false} />
+        }
       </div>
     )
   })

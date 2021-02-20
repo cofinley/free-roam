@@ -4,16 +4,16 @@ import { Link } from 'react-router-dom'
 
 import './link.scss'
 
-import { pushBlock } from '../view-pane/viewPaneSlice'
+import { pushView } from '../view-pane/viewPaneSlice'
 
-const PageLink = ({ pageBlockId, children, noStyling, afterClick, ...rest }) => {
+const PageLink = ({ blockId, isPage = true, children, noStyling, afterClick, ...rest }) => {
   const dispatch = useDispatch()
-  const to = `/page/${pageBlockId}`
+  const to = `/page/${blockId}`
 
   const navigate = event => {
     if (event.shiftKey) {
       event.preventDefault()
-      dispatch(pushBlock({ blockId: pageBlockId }))
+      dispatch(pushView({ type: isPage ? 'page' : 'block', blockId: blockId }))
     }
     if (afterClick) {
       afterClick()

@@ -63,9 +63,23 @@ const linksSlice = createSlice({
       }
 
       state.from[sourceBlockId] = linkedBlockIds
+    },
+    removeBlockLinks: (state, action) => {
+      const { blockId } = action.payload
+      const destinationBlockIds = state.from[blockId]
+      linksSlice.caseReducers.setLinks(state, { payload: { sourceBlockId: blockId, linkedBlockIds: [] }})
+      if (destinationBlockIds) {
+        destinationBlockIds
+          .map(destinationBlockId => {
+            state.to[destinationBlockId] = state.to[destinationBlockId]
+              .filter(sourceBlockId => sourceBlockId !== blockId)
+            return true
+          })
+      }
+      delete state.from[blockId]
     }
   }
 })
 
-export const { setLinksState, setLinks } = linksSlice.actions
+export const { setLinksState, setLinks, removeBlockLinks } = linksSlice.actions
 export default linksSlice.reducer

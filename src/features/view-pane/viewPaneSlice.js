@@ -3,27 +3,41 @@ import { createSlice } from '@reduxjs/toolkit'
 const viewPaneSlice = createSlice({
   name: 'viewPane',
   initialState: {
-    blockIds: ['abcd']
+    views: [
+      {
+        type: 'page',
+        blockId: 'abcd'
+      },
+      {
+        type: 'block',
+        blockId: 'a1'
+      },
+      {
+        type: 'references',
+        blockId: 'efgh'
+      }
+    ]
   },
   reducers: {
     setViewPaneState: (state, action) => {
       const newState = action.payload
-      if (newState && 'blockIds' in newState) {
+      if (newState && 'views' in newState) {
         return newState
       }
     },
-    pushBlock: (state, action) => {
-      const { blockId } = action.payload
-      if (!state.blockIds.includes(blockId)) {
-        state.blockIds.unshift(blockId)
+    pushView: (state, action) => {
+      const { type, blockId } = action.payload
+      const viewExists = state.views.find(view => view.type === type && view.blockId === blockId)
+      if (!viewExists) {
+        state.views.unshift(action.payload)
       }
     },
-    popBlock: (state, action) => {
-      const { blockId } = action.payload
-      state.blockIds = state.blockIds.filter(openBlockId => openBlockId !== blockId)
+    popView: (state, action) => {
+      const { type, blockId } = action.payload
+      state.views = state.views.filter(view => (type !== 'all' && view.type !== type) || view.blockId !== blockId)
     }
   }
 })
 
-export const { setViewPaneState, pushBlock, popBlock } = viewPaneSlice.actions
+export const { setViewPaneState, pushView, popView } = viewPaneSlice.actions
 export default viewPaneSlice.reducer
