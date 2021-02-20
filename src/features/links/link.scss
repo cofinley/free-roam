@@ -1,5 +1,13 @@
 @import "../../index.scss";
 
+.block-link {
+    color: #95eb0c;
+
+    &:hover {
+        color: #95eb0c;
+    }
+}
+
 .block-link--no-styling {
     color: unset;
 

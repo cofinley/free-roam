@@ -3,5 +3,11 @@
 }
 
 .stage {
-    padding: 50px 150px 120px;
+    > .editor {
+        padding: 50px 150px 120px;
+    }
+
+    > .all-pages {
+        padding: 50px 50px 120px;
+    }
 }

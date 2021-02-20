@@ -6,6 +6,7 @@ import './main.scss'
 import Editor from '../editor/Editor'
 import Navbar from '../navbar/Navbar'
 import DailyNotes from '../daily-notes/DailyNotes'
+import AllPages from '../all-pages/AllPages'
 
 const Main = ({ blockId }) => {
   return (
@@ -29,6 +30,12 @@ const Main = ({ blockId }) => {
           path="/daily-notes"
           render={() => (
             <DailyNotes />
+          )}
+        />
+        <Route
+          path="/all-pages"
+          render={() => (
+            <AllPages />
           )}
         />
       </div>
