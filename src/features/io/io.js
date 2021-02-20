@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 
 import './io.scss'
 
@@ -9,6 +10,19 @@ import { setFilePaneState } from "../file-pane/filePaneSlice";
 import { setLinksState } from "../links/linksSlice";
 import { setNavbarState } from "../navbar/navbarSlice";
 import { setViewPaneState } from "../view-pane/viewPaneSlice";
+
+export const save = files => {
+  const zip = new JSZip()
+  files.map(file => {
+    const { content, fileName } = file
+    zip.file(fileName || 'free-roam.json', JSON.stringify(content))
+    return true
+  })
+  zip.generateAsync({type:"blob"})
+    .then(content => {
+      saveAs(content, `Free-Roam-Export-${Date.now()}`)
+    })
+}
 
 const IO = props => {
   const dispatch = useDispatch()
@@ -41,18 +55,12 @@ const IO = props => {
     reader.readAsText(event.target.files[0])
   }
 
-  const save = () => {
-    const jsonifiedState = JSON.stringify(s)
-    const file = new Blob([jsonifiedState], { type: 'text/plain;charset=utf-8' })
-    saveAs(file, "free-roam.json");
-  }
-
   return (
     <div className="d-flex justify-content-center">
       <label className="load-button-input mr-3">
         <input type="file" className="btn btn-secondary" accept=".json" onChange={load} />
       </label>
-      <button className="btn btn-secondary" onClick={save}>Save</button>
+      <button className="btn btn-secondary" onClick={() => save([{ content: s, fileName: 'free-roam.json' }])}>Save</button>
     </div>
   )
 }

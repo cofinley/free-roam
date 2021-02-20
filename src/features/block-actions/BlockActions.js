@@ -17,8 +17,9 @@ const BlockActions = ({ block, hasChildren, foldBlock, setFoldBlock }) => {
         }
       </span>
       <PageLink
-        pageBlockId={block.id}
+        blockId={block.id}
         noStyling
+        isPage={false}
       >
         <div className={`block-actions block-actions--bullet${foldBlock && hasChildren ? ' fold' : ''}`}>
           <span>•</span>

@@ -1,0 +1,23 @@
+@import '../../variables.scss';
+
+.all-pages__toolbar {
+    display: flex;
+    padding: 10px
+}
+
+.mentions-bubble {
+    position: relative;
+    width: 37px;
+    height: 20px;
+    border-radius: 10px;
+    top: 2px;
+    background-color: darken($link-color, 20%);
+    margin: 0 auto;
+    cursor: pointer;
+
+    span {
+        position: relative;
+        top: -4px;
+        font-size: small;
+    }
+}

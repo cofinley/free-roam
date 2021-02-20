@@ -12,7 +12,7 @@ function Shortcuts(props) {
     const block = blocks[blockId]
     return (
       <PageLink
-        pageBlockId={blockId}
+        blockId={blockId}
         key={blockId}
         className="list-group-item list-group-item-action bg-dark text-light"
       >

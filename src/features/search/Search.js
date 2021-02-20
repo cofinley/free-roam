@@ -22,7 +22,7 @@ const Search = ({ query, useLinks, onResultClick, onlyPages, allowCreation, onCr
       if (useLinks) {
         return (
           <PageLink
-            pageBlockId={block.id}
+            blockId={block.id}
             className="search-result"
             key={block.id}
             afterClick={onResultClick}

@@ -17,6 +17,9 @@ export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds =
       }
     }
   }
+  if (dailyNote) {
+    id = dailyNote
+  }
   return {
     id,
     parentId,
@@ -66,4 +69,25 @@ export const getNextBlockUp = (block, blocks) => {
     const parentBlock = blocks[block.parentId]
     return parentBlock
   }
+}
+
+export const serialize = (block, blocks) => {
+  const { childrenIds, ...newBlock} = block
+  if (!childrenIds.length) {
+    return newBlock
+  }
+  return {
+    ...newBlock,
+    children: childrenIds.map(childId => {
+      const childBlock  = blocks[childId]
+      return serialize(childBlock, blocks)
+    })
+  }
+}
+
+export const flattenTreeIds = (block, blocks) => {
+  if (!block.childrenIds.length) {
+    return block.id
+  }
+  return [block.id].concat(...block.childrenIds.map(childId => flattenTreeIds(blocks[childId], blocks)))
 }

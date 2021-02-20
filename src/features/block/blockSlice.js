@@ -15,7 +15,7 @@ const blocksSlice = createSlice({
     'uvwx': { id: 'uvwx', parentId: 'mnop', text: "I'm a third layer block", childrenIds: ['a2'] },
     'a1': { id: 'a1', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
     'a2': { id: 'a2', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
-    'a3': BlockModel({ id: 'a3', text: 'February 17th, 2021', childrenIds: ['a4'], created: 1613546102000, dailyNote: '2021-02-17' }),
+    '2021-02-17': BlockModel({ id: 'a3', text: 'February 17th, 2021', childrenIds: ['a4'], created: 1613546102000, dailyNote: '2021-02-17' }),
     'a4': { id: 'a4', parentId: 'a3', text: 'Click here to edit', childrenIds: [] }
   },
   reducers: {
@@ -48,6 +48,18 @@ const blocksSlice = createSlice({
       state[block.parentId].childrenIds = parentBlock.childrenIds.filter(childBlockId => childBlockId !== blockId)
       delete state[blockId]
     },
+    removePage: (state, action) => {
+      const { blockId } = action.payload
+      const block = state[blockId]
+      if (!block.childrenIds.length) {
+        delete state[blockId]
+        return
+      }
+      for (const childBlockId of block.childrenIds) {
+        blocksSlice.caseReducers.removePage(state, { payload: { blockId: childBlockId }})
+      }
+      delete state[blockId]
+    },
     changeParent: (state, action) => {
       const { blockId, parentId } = action.payload
       const block = state[blockId]
@@ -72,8 +84,7 @@ const blocksSlice = createSlice({
     },
     changeTitle: (state, action) => {
       const { currentTitle, newTitle } = action.payload
-      /* eslint-disable no-useless-escape */
-      const linkPat = new RegExp(`\[\[${currentTitle}\]\]`, 'g')
+      const linkPat = new RegExp(`\\[\\[${currentTitle}\\]\\]`, 'g')
       Object.values(state)
         .map(block => {
           if (linkPat.test(block.text)) {
@@ -130,6 +141,7 @@ export const {
   getBlockByText,
   addBlock,
   removeBlock,
+  removePage,
   updateBlock,
   repositionBlock,
   makeSibling

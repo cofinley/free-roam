@@ -1,10 +1,11 @@
 @import "../../index.scss";
+@import '../../variables.scss';
 
 .block-link {
-    color: #95eb0c;
+    color: $link-color;
 
     &:hover {
-        color: #95eb0c;
+        color: $link-color;
     }
 }
 
