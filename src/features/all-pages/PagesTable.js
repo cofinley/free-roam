@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTable, useSortBy, useRowSelect } from 'react-table'
-import { ChevronDown, ChevronUp, Trash, Download, Calendar3 } from 'react-bootstrap-icons'
+import { ChevronDown, ChevronUp, Trash, Download } from 'react-bootstrap-icons'
 
 import { save } from '../io/io'
 import { serialize, flattenTreeIds } from '../block/blockModel'
@@ -33,6 +33,9 @@ const PagesTable = ({ columns, data }) => {
   const linksToBlocks = useSelector(state => state.links.to)
 
   const downloadRows = rows => {
+    if (!rows.length) {
+      return
+    }
     const files = rows
       .map(row => row.original.blockId)
       .map(blockId => {
@@ -51,6 +54,9 @@ const PagesTable = ({ columns, data }) => {
    * @param {object} rows - table rows
    */
   const deleteRows = rows => {
+    if (!rows.length) {
+      return
+    }
     rows
       .map(row => row.original.blockId)
       .map(blockId => {
@@ -82,7 +88,7 @@ const PagesTable = ({ columns, data }) => {
     rows,
     prepareRow,
     selectedFlatRows,
-    state: { selectedRowIds },
+    state: { selectedRowIds }
   } = useTable(
     {
       columns,
@@ -112,10 +118,15 @@ const PagesTable = ({ columns, data }) => {
   return (
     <>
       <div className="all-pages__toolbar">
-        <Trash onClick={() => deleteRows(selectedFlatRows)} className="mr-3" color={Object.keys(selectedRowIds).length ? 'white' : 'gray'} />
-        <Download onClick={() => downloadRows(selectedFlatRows)} color={Object.keys(selectedRowIds).length ? 'white' : 'gray'} />
+        <Trash
+          onClick={() => deleteRows(selectedFlatRows)}
+          className={`mr-3 all-pages__button${Object.keys(selectedRowIds).length ? ' active': ''}`}
+        />
+        <Download
+          onClick={() => downloadRows(selectedFlatRows)}
+          className={`all-pages__button${Object.keys(selectedRowIds).length ? ' active': ''}`}
+        />
         <div className="flex-grow-1" />
-        <Calendar3 color="lightgray" />
       </div>
       <table className="table table-dark" {...getTableProps()}>
         <thead className="thead-dark">

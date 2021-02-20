@@ -20,8 +20,7 @@ const getData = (blocks, linksToBlocks) => {
       blockId: block.id,
       created: block.created,
       updated: block.updated,
-      mentions: linksToBlocks[block.id] || [],
-      dailyNote: !!block.dailyNote
+      mentions: linksToBlocks[block.id] || []
     }))
 }
 
@@ -58,10 +57,6 @@ const AllPages = props => {
         accessor: 'created',
         className: 'text-right',
         Cell: ({ value }) => value ? dayjs(value).format(DAILY_NOTE_DISPLAY_FORMAT) : null
-      }, {
-        Header: 'Daily Note?',
-        accessor: 'dailyNote',
-        show: false
       }
     ],
     [onMentionClick]

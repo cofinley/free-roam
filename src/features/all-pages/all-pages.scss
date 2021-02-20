@@ -5,6 +5,16 @@
     padding: 10px
 }
 
+.all-pages__button {
+    cursor: not-allowed;
+    fill: gray;
+
+    &.active {
+        cursor: pointer;
+        fill: white;
+    }
+}
+
 .mentions-bubble {
     position: relative;
     width: 37px;

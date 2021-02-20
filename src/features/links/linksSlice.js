@@ -73,6 +73,7 @@ const linksSlice = createSlice({
           .map(destinationBlockId => {
             state.to[destinationBlockId] = state.to[destinationBlockId]
               .filter(sourceBlockId => sourceBlockId !== blockId)
+            return true
           })
       }
       delete state.from[blockId]
