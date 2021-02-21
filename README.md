@@ -2,6 +2,8 @@
 
 Currently a work in progress. See [issues](https://github.com/cofinley/free-roam/issues) for work left to do.
 
+You can test drive it at https://cofinley.github.io/free-roam/
+
 ## What
 
 A [Roam](https://roamresearch.com) clone. One that is:
@@ -18,9 +20,9 @@ A [Roam](https://roamresearch.com) clone. One that is:
 
 ## Notes
 
-See current releases to try it out. Just download the bundle, unzip, open the `index.html` and enjoy! Save and load your data in-between sessions.
+Since the app is self-contained, it can be built as a static bundle and hosted on Github Pages [here](https://cofinley.github.io/free-roam/). And since it's static, you can use it as a sandbox where each your edits are only visible to you. The data is local to your browser. That being said, the app does not (currently) persist data between browser sessions, so use the save/load buttons in the left sidebar if you want to come back to your work!
 
-I'm still figuring out best ways to do this without delving into React Native/Electron but it may come to that for less friction on saving/backing up.
+If you'd like to run the build locally, see [current releases](https://github.com/cofinley/free-roam/releases). Just download the `build.zip`, unzip it, open the `index.html` and enjoy! Again, save and load your data in-between sessions.
 
 For now, it's the user's job to save their data, but the app will also warn on tab/window close in case there is unsaved work.
 
