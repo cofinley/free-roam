@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
+import { getPage } from '../block/blockModel';
 
 import PageLink from '../links/PageLink'
 import Editor from './Editor'
@@ -19,13 +20,18 @@ const References = ({ block, isMain }) => {
         return null
       }
       const referenceBlock = blocks[referenceBlockId]
+      const referenceBlockPage = getPage(referenceBlock, blocks)
       return (
         <div key={referenceBlockId}>
-          <PageLink blockId={referenceBlockId}><h4>{referenceBlock.text}</h4></PageLink>
-          <Editor
-            blockId={referenceBlockId}
-            isRoot={false}
-          />
+          <PageLink blockId={referenceBlockPage.id}><h5>{referenceBlockPage.text}</h5></PageLink>
+          <div className="reference-container">
+            <Editor
+              blockId={referenceBlockId}
+              isRoot={false}
+              fold
+              showBreadcrumbs
+            />
+          </div>
         </div>
       )
     })
@@ -35,22 +41,28 @@ const References = ({ block, isMain }) => {
     if (block.parentId || !showUnlinkedRefs) {
       return
     }
-    /* eslint-disable no-useless-escape */
-    const titlePat = new RegExp(`(?<![\[\w])${block.text}(?![\[\w]+)`, 'gi')
+    const titlePat = new RegExp(`(?<![\\[\\w])${block.text}(?![\\[\\w]+)`, 'gi')
     const references = Object.values(blocks)
-      .filter(otherBlock => otherBlock.parentId && titlePat.test(otherBlock.text))
-      .map(otherBlock => (
-        <div key={otherBlock.id}>
-          <PageLink blockId={otherBlock.id}>
-            <h4>{otherBlock.text}</h4>
-          </PageLink>
-          <Editor
-            blockId={otherBlock.id}
-            isRoot={false}
-            isMain={isMain}
-          />
-        </div>
-      ))
+      .filter(referenceBlock => referenceBlock.parentId && titlePat.test(referenceBlock.text))
+      .map(referenceBlock => {
+        const referenceBlockPage = getPage(referenceBlock, blocks)
+        return (
+          <div key={referenceBlock.id}>
+            <PageLink blockId={referenceBlockPage.id}>
+              <h5>{referenceBlockPage.text}</h5>
+            </PageLink>
+            <div className="reference-container">
+              <Editor
+                blockId={referenceBlock.id}
+                isRoot={false}
+                isMain={isMain}
+                fold
+                showBreadcrumbs
+              />
+            </div>
+          </div>
+        )
+      })
     if (!references.length) {
       return <span>No unlinked references</span>
     }
@@ -61,7 +73,7 @@ const References = ({ block, isMain }) => {
     <div>
       {block.parentId === null && (references && references.length > 0) && isMain &&
         <div className="references references--linked">
-          <b>Linked References</b>
+          <b>{references.length} Linked References</b>
           {linkedReferences()}
         </div>
       }

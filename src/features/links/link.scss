@@ -1,13 +1,4 @@
 @import "../../index.scss";
-@import '../../variables.scss';
-
-.block-link {
-    color: $link-color;
-
-    &:hover {
-        color: $link-color;
-    }
-}
 
 .block-link--no-styling {
     color: unset;

@@ -1,23 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 import { BlockModel } from './blockModel'
+import initialBlocks from './initialState.js'
 
 const DEFAULT_TEXT = 'Click here to edit'
 
 const blocksSlice = createSlice({
   name: 'blocks',
-  initialState: {
-    'abcd': { id: 'abcd', parentId: null, text: 'Hello World', childrenIds: ['ijkl', 'mnop'] },
-    'efgh': { id: 'efgh', parentId: null, text: 'Lorem ipsum', childrenIds: ['qrst'] },
-    'ijkl': { id: 'ijkl', parentId: 'abcd', text: 'Normal *italics* **bold** ***bold italics***', childrenIds: [] },
-    'mnop': { id: 'mnop', parentId: 'abcd', text: 'Link to [[Lorem ipsum]]', childrenIds: ['uvwx', 'a1'] },
-    'qrst': { id: 'qrst', parentId: 'efgh', text: 'Click here to edit', childrenIds: [] },
-    'uvwx': { id: 'uvwx', parentId: 'mnop', text: "I'm a third layer block", childrenIds: ['a2'] },
-    'a1': { id: 'a1', parentId: 'mnop', text: "I'm another third layer block", childrenIds: [] },
-    'a2': { id: 'a2', parentId: 'uvwx', text: "I'm a fourth layer block", childrenIds: [] },
-    '2021-02-17': BlockModel({ id: 'a3', text: 'February 17th, 2021', childrenIds: ['a4'], created: 1613546102000, dailyNote: '2021-02-17' }),
-    'a4': { id: 'a4', parentId: 'a3', text: 'Click here to edit', childrenIds: [] }
-  },
+  initialState: initialBlocks,
   reducers: {
     setBlocksState: (state, action) => {
       const newState = action.payload
@@ -28,7 +18,7 @@ const blocksSlice = createSlice({
     addBlock: (state, action) => {
       const block = action.payload
       if (!block.parentId) {
-        const childBlock = BlockModel({ parentId: block.id, text: DEFAULT_TEXT })
+        const childBlock = BlockModel({ parentId: block.id, text: DEFAULT_TEXT }, state)
         block.childrenIds.push(childBlock.id)
         state[childBlock.id] = childBlock
       } else {

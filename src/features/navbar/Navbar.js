@@ -53,7 +53,7 @@ const Navbar = ({ blockId }) => {
   }
 
   const createAndNavigateToPage = () => {
-    const page = BlockModel({ text: searchQuery })
+    const page = BlockModel({ text: searchQuery }, blocks)
     dispatch(addBlock(page))
     clearSearch()
     history.push(`/page/${page.id}`)

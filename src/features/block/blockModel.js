@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
@@ -6,8 +6,18 @@ dayjs.extend(customParseFormat)
 
 export const DAILY_NOTE_DISPLAY_FORMAT = 'MMMM Do, YYYY'
 export const DAILY_NOTE_STORAGE_FORMAT = 'YYYY-MM-DD'
+const ID_LENGTH = 8
 
-export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds = [], created = Date.now(), dailyNote = null } = {}) => {
+export const BlockModel = (
+  {
+    id = nanoid(ID_LENGTH),
+    parentId = null,
+    text,
+    childrenIds = [],
+    created = Date.now(),
+    dailyNote = null
+  } = {},
+  blocks) => {
   const isPage = !parentId
   if (isPage) {
     if (!dailyNote) {
@@ -19,6 +29,11 @@ export const BlockModel = ({ id = uuidv4(), parentId = null, text, childrenIds =
   }
   if (dailyNote) {
     id = dailyNote
+  } else if (id in blocks) {
+    // Reroll id if collision (unlikely)
+    while (id in blocks) {
+      id = nanoid(ID_LENGTH)
+    }
   }
   return {
     id,

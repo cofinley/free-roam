@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap.scss";
+@import "./variables.scss";
 
 body {
   margin: 0;
@@ -15,4 +16,16 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+pre {
+  color: $code-color;
+}
+
+a {
+  color: $link-color-light;
+
+  &:hover {
+    color: $link-color-light;
+  }
 }

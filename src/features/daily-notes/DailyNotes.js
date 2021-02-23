@@ -24,7 +24,7 @@ const DailyNotes = props => {
   const todayFormattedDate = today.format(DAILY_NOTE_DISPLAY_FORMAT)
   let todayDailyNoteBlock = dailyNoteBlocks.find(block => block.text === todayFormattedDate)
   if (!todayDailyNoteBlock) {
-    todayDailyNoteBlock = BlockModel({ text: todayFormattedDate, dailyNote: today.format(DAILY_NOTE_STORAGE_FORMAT) })
+    todayDailyNoteBlock = BlockModel({ text: todayFormattedDate, dailyNote: today.format(DAILY_NOTE_STORAGE_FORMAT) }, blocks)
     dispatch(addBlock(todayDailyNoteBlock))
   }
 

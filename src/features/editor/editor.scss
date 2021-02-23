@@ -45,4 +45,19 @@
 
 .references {
     margin-top: 25px;
+
+    .breadcrumbs {
+        font-size: 0.8em;
+        margin-bottom: 5px;
+
+        > .block-link:first-child {
+            display: none;
+        }
+    }
+}
+
+.reference-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    padding: 5px 5px 12px;
 }

@@ -9,6 +9,12 @@
     @extend .text-light;
     width: 100%;
     cursor: text;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+
+    p:last-child {
+        margin-bottom: -1px;
+    }
 }
 
 .block-text--edit {
@@ -20,7 +26,7 @@
     border-style: none;
     outline: none;
     padding: 0;
-    margin-bottom: -2px;
+    margin-bottom: -1px;
 }
 
 .block-text--title {

@@ -8,7 +8,7 @@ import Block from '../block/Block'
 import Breadcrumbs from './Breadcrumbs'
 import BlockActions from '../block-actions/BlockActions';
 
-const Editor = ({ blockId, isRoot, isMain, fold = false }) => {
+const Editor = ({ blockId, isRoot, showBreadcrumbs = false, isMain, fold = false }) => {
   const blocks = useSelector(state => state.blocks)
   const block = blocks[blockId]
   const [foldBlock, setFoldBlock] = useState(fold)
@@ -38,7 +38,7 @@ const Editor = ({ blockId, isRoot, isMain, fold = false }) => {
 
   return (
     <div className={`editor ${isRoot ? 'editor--root' : 'editor--child'}${isPage ? ' editor--page' : ''}`}>
-      {isRoot && !isPage &&
+      {(showBreadcrumbs || (isRoot && !isPage)) &&
         <Breadcrumbs block={block} />
       }
       <div className="d-flex">

@@ -60,7 +60,7 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
     if (foundPage) {
       return foundPage
     }
-    const newPageBlock = BlockModel({ text })
+    const newPageBlock = BlockModel({ text }, blocks)
     dispatch(addBlock(newPageBlock))
     return newPageBlock
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import './main.scss'
 
@@ -13,13 +13,9 @@ const Main = ({ blockId }) => {
     <div className="main">
       <Navbar blockId={blockId}/>
       <div className="stage">
-        <Route
-          exact={true}
-          path="/"
-          render={() => (
-            <Editor blockId={null} isRoot isMain />
-          )}
-        />
+        <Route exact path="/">
+          <Redirect to="/page/welcome" />
+        </Route>
         <Route
           path="/page/:blockId"
           render={({ match }) => (

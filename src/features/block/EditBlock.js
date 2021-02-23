@@ -61,7 +61,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
       dispatch(updateBlock({ blockId: block.id, text: remainingText }))
       event.target.value = remainingText
     }
-    const newBlock = BlockModel({ text: newBlockText, parentId: block.parentId })
+    const newBlock = BlockModel({ text: newBlockText, parentId: block.parentId }, blocks)
     dispatch(addBlock(newBlock))
     dispatch(makeSibling({ firstSiblingBlockId: block.id, secondSiblingBlockId: newBlock.id }))
     dispatch(updateFocusedBlock({ blockId: newBlock.id, isMain, caretPos: 0 }))

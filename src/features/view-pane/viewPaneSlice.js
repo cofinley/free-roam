@@ -6,14 +6,6 @@ const viewPaneSlice = createSlice({
     views: [
       {
         type: 'page',
-        blockId: 'abcd'
-      },
-      {
-        type: 'block',
-        blockId: 'a1'
-      },
-      {
-        type: 'references',
         blockId: 'efgh'
       }
     ]
