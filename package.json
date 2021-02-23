@@ -1,6 +1,6 @@
 {
   "name": "free-roam",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
   "homepage": "https://cofinley.github.io/free-roam",
   "dependencies": {
@@ -52,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
