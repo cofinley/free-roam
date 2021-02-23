@@ -4,13 +4,14 @@ import { X } from "react-bootstrap-icons";
 
 import './view-pane.scss'
 
-import { popView } from './viewPaneSlice'
+import { pushView, popView } from './viewPaneSlice'
 import Editor from '../editor/Editor'
 import PageLink from '../links/PageLink';
 import References from '../editor/References';
 
 const ViewPane = props => {
   const blocks = useSelector(state => state.blocks)
+  const links = useSelector(state => state.links)
   const views = useSelector(state => state.viewPane.views)
   const dispatch = useDispatch()
 
@@ -43,21 +44,26 @@ const ViewPane = props => {
       return null
     }
     const block = blocks[blockId]
+    const references = links.to[block.id]
     return (
       <div
         key={`${type}-${block.id}`}
         className="view-pane__section"
       >
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center">
           {header(type, block)}
+          <div className="flex-grow-1" />
+          {type === 'page' &&
+            <button className="btn btn-dark btn-sm px-1 py-0" onClick={() => dispatch(pushView({ type: 'references', blockId }))}>{references.length}</button>
+          }
           <X
             className="btn-close"
             onClick={closeBlock.bind(null, type, block.id)}
           />
         </div>
-        { type === 'references'
-          ? <References block={block} isMain />
-          : <Editor blockId={block.id} isRoot isMain={false} />
+        {type === 'references'
+         ? <References block={block} isMain />
+         : <Editor blockId={block.id} isRoot isMain={false} />
         }
       </div>
     )
