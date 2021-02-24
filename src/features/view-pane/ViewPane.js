@@ -44,7 +44,7 @@ const ViewPane = props => {
       return null
     }
     const block = blocks[blockId]
-    const references = links.to[block.id]
+    const references = links.to[block.id] || []
     return (
       <div
         key={`${type}-${block.id}`}
@@ -54,7 +54,12 @@ const ViewPane = props => {
           {header(type, block)}
           <div className="flex-grow-1" />
           {type === 'page' &&
-            <button className="btn btn-dark btn-sm px-1 py-0" onClick={() => dispatch(pushView({ type: 'references', blockId }))}>{references.length}</button>
+            <button
+              className="btn btn-dark btn-sm px-1 py-0"
+              onClick={() => dispatch(pushView({ type: 'references', blockId }))}
+            >
+              {references.length}
+            </button>
           }
           <X
             className="btn-close"

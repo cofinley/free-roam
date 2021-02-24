@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { getPage } from '../block/blockModel';
+import { CaretRightFill, CaretDownFill } from 'react-bootstrap-icons'
 
 import PageLink from '../links/PageLink'
 import Editor from './Editor'
 
 const References = ({ block, isMain }) => {
+  const [showLinkedRefs, setShowLinkedRefs] = useState(true)
   const [showUnlinkedRefs, setShowUnlinkedRefs] = useState(false)
+  const [unlinkedRefs, setUnlinkedRefs] = useState(null)
   const links = useSelector(state => state.links)
   const blocks = useSelector(state => state.blocks)
   const references = links.to[block.id]
 
-  const linkedReferences = () => {
+  const renderLinkedReferences = () => {
     if (block.parentId || !references || !references.length) {
       return
     }
@@ -28,6 +31,7 @@ const References = ({ block, isMain }) => {
             <Editor
               blockId={referenceBlockId}
               isRoot={false}
+              isMain={isMain}
               fold
               showBreadcrumbs
             />
@@ -37,13 +41,21 @@ const References = ({ block, isMain }) => {
     })
   }
 
-  const unlinkedReferences = () => {
+  const getUnlinkedReferences = text => {
+    const titlePat = new RegExp(`(?<![\\[\\w])${text}(?![\\[\\w]+)`, 'gi')
+    const unlinkedReferenceBlocks = Object.values(blocks)
+      .filter(referenceBlock => referenceBlock.parentId && titlePat.test(referenceBlock.text))
+    return unlinkedReferenceBlocks
+  }
+
+  const renderUnlinkedReferences = () => {
     if (block.parentId || !showUnlinkedRefs) {
       return
     }
-    const titlePat = new RegExp(`(?<![\\[\\w])${block.text}(?![\\[\\w]+)`, 'gi')
-    const references = Object.values(blocks)
-      .filter(referenceBlock => referenceBlock.parentId && titlePat.test(referenceBlock.text))
+    if (!unlinkedRefs.length) {
+      return <p>No unlinked references</p>
+    }
+    const unlinkedReferenceBlockEditors = unlinkedRefs
       .map(referenceBlock => {
         const referenceBlockPage = getPage(referenceBlock, blocks)
         return (
@@ -63,33 +75,45 @@ const References = ({ block, isMain }) => {
           </div>
         )
       })
-    if (!references.length) {
-      return <span>No unlinked references</span>
+    return unlinkedReferenceBlockEditors
+  }
+
+  const toggleUnlinkedReferences = event => {
+    if (showUnlinkedRefs) {
+      setShowUnlinkedRefs(false)
+    } else {
+      setShowUnlinkedRefs(true)
+      setUnlinkedRefs(getUnlinkedReferences(block.text))
     }
-    return references
   }
 
   return (
     <div>
-      {block.parentId === null && (references && references.length > 0) && isMain &&
+      {block.parentId === null && references && references.length > 0 && isMain &&
         <div className="references references--linked">
-          <b>{references.length} Linked References</b>
-          {linkedReferences()}
+          <span className="references__toggle no-select" onClick={() => setShowLinkedRefs(state => !state)}>
+            {showLinkedRefs
+             ? <CaretDownFill color="white" />
+             : <CaretRightFill color="white" />
+            }
+            <b>{references.length} Linked References</b>
+          </span>
+          {showLinkedRefs &&
+            renderLinkedReferences()
+          }
         </div>
       }
       {block.parentId === null && isMain &&
-        <div className="references">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => setShowUnlinkedRefs(!showUnlinkedRefs)}
-          >
-            Unlinked References
-          </button>
+        <div className="references references--unlinked">
+          <span className="references__toggle no-select" onClick={toggleUnlinkedReferences}>
+            {showUnlinkedRefs
+             ? <CaretDownFill color="white" />
+             : <CaretRightFill color="white" />
+            }
+            <b>{unlinkedRefs && unlinkedRefs.length ? unlinkedRefs.length : ''} Unlinked References</b>
+          </span>
           {showUnlinkedRefs &&
-            <div className="references references--unlinked">
-              {unlinkedReferences()}
-            </div>
+            renderUnlinkedReferences()
           }
         </div>
       }
