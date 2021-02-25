@@ -8,10 +8,9 @@ import Navbar from '../navbar/Navbar'
 import DailyNotes from '../daily-notes/DailyNotes'
 import AllPages from '../all-pages/AllPages'
 
-const Main = ({ blockId }) => {
+const Main = props => {
   return (
     <div className="main">
-      <Navbar blockId={blockId}/>
       <div className="stage">
         <Route exact path="/">
           <Redirect to="/page/welcome" />
@@ -19,19 +18,28 @@ const Main = ({ blockId }) => {
         <Route
           path="/page/:blockId"
           render={({ match }) => (
-            <Editor blockId={match.params.blockId} isRoot isMain />
+            <>
+              <Navbar blockId={match.params.blockId}/>
+              <Editor blockId={match.params.blockId} isRoot isMain />
+            </>
           )}
         />
         <Route
           path="/daily-notes"
           render={() => (
-            <DailyNotes />
+            <>
+              <Navbar />
+              <DailyNotes />
+            </>
           )}
         />
         <Route
           path="/all-pages"
           render={() => (
-            <AllPages />
+            <>
+              <Navbar />
+              <AllPages />
+            </>
           )}
         />
       </div>

@@ -10,12 +10,12 @@
 }
 
 .btn--toggle-favorite {
-    padding: 0 0 5px;
+    padding: 0 0 5px !important;
     width: 30px;
     box-shadow: none;
     margin-left: 10px;
 
     &:focus {
-        box-shadow: none;
+        box-shadow: none !important;
     }
 }
