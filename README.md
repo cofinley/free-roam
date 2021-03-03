@@ -1,5 +1,7 @@
 # Free-roam
 
+![](./screenshot.png)
+
 Currently a work in progress. See [issues](https://github.com/cofinley/free-roam/issues) for work left to do.
 
 You can test drive it at https://cofinley.github.io/free-roam/

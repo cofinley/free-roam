@@ -35,12 +35,10 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     const caretInfo = getCaretInfo(event.target.value, caretPos)
     if (caretInfo.caretInBrackets) {
       setSearching(true)
-      console.log(caretInfo.textInBrackets)
       setQuery(caretInfo.textInBrackets)
     } else {
       setSearching(false)
     }
-    console.log(searching)
   }
 
   const onTab = event => {
