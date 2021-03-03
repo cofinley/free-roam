@@ -46,11 +46,17 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
     const linksArray = Array.from(links)
     const blockInFromLinks = block.id in linksFrom
     if (linksArray.length) {
-      if (!(blockInFromLinks) || JSON.stringify(linksArray.sort()) !== JSON.stringify(linksFrom[block.id].sort())) {
+      if (!blockInFromLinks || !eqSet(new Set(linksArray), new Set(linksFrom[block.id]))) {
         dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: linksArray }))
       }
     }
     return jsxArray
+  }
+
+  const eqSet = (as, bs) => {
+    if (as.size !== bs.size) return false;
+    for (var a of as) if (!bs.has(a)) return false;
+    return true;
   }
 
   const linkToPage = text => {

@@ -58,6 +58,13 @@ const Search = ({ query, useLinks, onResultClick, onlyPages, allowCreation, onCr
 
         suggestions.splice(0, 0, createPageLink)
       }
+    } else if (!suggestions.length) {
+        const searchPlaceholder =
+          <li key={`default-suggestion`} className="search-result">
+            <span>Search for a page</span>
+          </li>
+
+        suggestions.splice(0, 0, searchPlaceholder)
     }
   }
 

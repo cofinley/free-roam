@@ -3,19 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import TextareaAutosize from 'react-textarea-autosize'
 import getCaretCoordinates from 'textarea-caret'
 
+import { getCaretInfo } from './editUtils'
 import { BlockModel, getPage, getNextBlockUp } from './blockModel'
 import { addBlock, removeBlock, updateBlock, repositionBlock, makeSibling } from './blockSlice'
 import { updateFocusedBlock } from '../editor/editorSlice'
 import Search from '../search/Search'
-
-const titleCharAllowed = keyCode => (
-  // Numbers and letters
-  (48 <= keyCode && keyCode < 91)
-  // Numpad numbers and symbols
-  || (96 <= keyCode && keyCode < 112 && keyCode !== 108)
-  // Symbols
-  || (186 <= keyCode)
-)
 
 const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRender }) => {
   const dispatch = useDispatch()
@@ -35,9 +27,20 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
       onOpenBracket(event)
     } else if (event.key === 'Backspace') {
       onBackspace(event)
-    } else if (searching && titleCharAllowed(event.keyCode)) {
-      setQuery(query + event.key)
     }
+  }
+
+  const onKeyUp = event => {
+    const caretPos = event.target.selectionStart
+    const caretInfo = getCaretInfo(event.target.value, caretPos)
+    if (caretInfo.caretInBrackets) {
+      setSearching(true)
+      console.log(caretInfo.textInBrackets)
+      setQuery(caretInfo.textInBrackets)
+    } else {
+      setSearching(false)
+    }
+    console.log(searching)
   }
 
   const onTab = event => {
@@ -78,6 +81,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     if (prevChar === '[' && !searching) {
       setSearching(true)
       setQuery('')
+      return
     } else {
       setSearching(false)
     }
@@ -108,12 +112,9 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     const title = blockToInsert.text
     const value = textarea.current.value
     const caretPos = textarea.current.selectionStart
-    const firstBracketPat = /\[\[(?!.*\]\])/gm
-    const lastBracketPat = /(?<!\[\[[^\]]+)]]/gm
-    const firstSurroundingBracketIndex = value.substring(0, caretPos).search(firstBracketPat)
-    const lastSurroundingBracketIndex = Array.from(value.substring(caretPos).matchAll(lastBracketPat)).slice(-1)[0].index + caretPos
-    const beforeTitle = value.substring(0, firstSurroundingBracketIndex + 2)
-    const afterTitle = value.substring(lastSurroundingBracketIndex)
+    const caretInfo = getCaretInfo(value, caretPos)
+    const beforeTitle = value.substring(0, caretInfo.startBracketIndex + 2)
+    const afterTitle = value.substring(caretInfo.endBracketIndex)
     const newValue = beforeTitle + title + afterTitle
     textarea.current.value = newValue
     setSearching(false)
@@ -174,6 +175,12 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     }
   }
 
+  const forceSave = text => {
+    if (block.text !== text) {
+      dispatch(updateBlock({ blockId: block.id, text }))
+    }
+  }
+
   const isFocusedBlock = focusedBlock.blockId
     && focusedBlock.blockId === block.id
     && focusedBlock.isMain === isMain
@@ -182,6 +189,11 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
   if (isFocusedBlock && textarea.current) {
     textarea.current.focus()
     textarea.current.selectionStart = focusedBlock.caretPos
+  }
+
+  const onBlur = event => {
+    forceSave(event.target.value)
+    onRender()
   }
 
   return (
@@ -193,7 +205,8 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
         onFocus={setCaretPos}
         onKeyDown={onKeyDown}
         onChange={save}
-        onBlur={onRender}
+        onKeyUp={onKeyUp}
+        onBlur={onBlur}
         defaultValue={block.text}
       />
       {searching &&

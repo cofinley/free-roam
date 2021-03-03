@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from './testUtils'
+
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+test('renders UI without crashing', () => {
+  render(<App />, { initialState: {} })
+  const linkElement = screen.getByText(/Welcome to Free-roam/i)
+  expect(linkElement).toBeInTheDocument()
+})
