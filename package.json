@@ -1,6 +1,6 @@
 {
   "name": "free-roam",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "homepage": "https://cofinley.github.io/free-roam",
   "dependencies": {
