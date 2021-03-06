@@ -1,3 +1,5 @@
+import getCaretCoordinates from 'textarea-caret'
+
 export const getCaretInfo = (text, caretPos) => {
   const wikiLinkRegex = /\[\[([^\]]*(?:\]\])?)\]\]/gm
   const matches = text.matchAll(wikiLinkRegex)
@@ -18,4 +20,14 @@ export const getCaretInfo = (text, caretPos) => {
     }
   }
   return { startBracketIndex, endBracketIndex, caretInBrackets, textInBrackets }
+}
+
+export const isCaretOnFirstRow = (textarea, lineHeight) => {
+  const { top } = getCaretCoordinates(textarea, textarea.selectionStart)
+  return top <= lineHeight
+}
+
+export const isCaretOnLastRow = (textarea, lineHeight) => {
+  const { top } = getCaretCoordinates(textarea, textarea.selectionStart)
+  return textarea.offsetHeight <= top + lineHeight
 }

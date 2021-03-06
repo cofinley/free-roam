@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import TextareaAutosize from 'react-textarea-autosize'
 import getCaretCoordinates from 'textarea-caret'
 
-import { getCaretInfo } from './editUtils'
-import { BlockModel, getPage, getNextBlockUp } from './blockModel'
+import { getCaretInfo, isCaretOnFirstRow, isCaretOnLastRow } from './editUtils'
+import { BlockModel, getNextBlockUp, getNextBlockDown, isFirstPageChild } from './blockModel'
 import { addBlock, removeBlock, updateBlock, repositionBlock, makeSibling } from './blockSlice'
 import { updateFocusedBlock } from '../editor/editorSlice'
 import Search from '../search/Search'
@@ -27,6 +27,8 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
       onOpenBracket(event)
     } else if (event.key === 'Backspace') {
       onBackspace(event)
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      onVerticalArrow(event)
     }
   }
 
@@ -93,16 +95,36 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
       return
     }
     event.preventDefault()
-    const pageBlock = getPage(block, blocks)
-    const isFirstPageChild = block.parentId === pageBlock.id && pageBlock.childrenIds[0] === block.id
-    if (isFirstPageChild) {
+    const destinationBlock = getNextBlockUp(block, blocks)
+    if (!destinationBlock) {
       return
     }
-    const destinationBlock = getNextBlockUp(block, blocks)
     const newCaretPos = destinationBlock.text.length
     dispatch(updateBlock({ blockId: destinationBlock.id, text: destinationBlock.text + block.text }))
     dispatch(removeBlock({ blockId: block.id }))
     dispatch(updateFocusedBlock({ blockId: destinationBlock.id, isMain, caretPos: newCaretPos }))
+  }
+
+  const onVerticalArrow = event => {
+    const goingUp = event.key === 'ArrowUp'
+    const styling = window.getComputedStyle(event.target)
+    const lineHeight = parseInt(styling.getPropertyValue('line-height'))
+    const caretPos = event.target.selectionStart
+    const caretOnFirstRow = isCaretOnFirstRow(event.target, lineHeight)
+    const caretOnLastRow = isCaretOnLastRow(event.target, lineHeight)
+    if (caretOnFirstRow && goingUp && !isFirstPageChild(block, blocks)) {
+      const prevSibling = getNextBlockUp(block, blocks)
+      if (prevSibling) {
+        dispatch(updateFocusedBlock({ blockId: prevSibling.id, caretPos, isMain }))
+        event.preventDefault()
+      }
+    } else if (caretOnLastRow && !goingUp) {
+      const nextSibling = getNextBlockDown(block, blocks)
+      if (nextSibling) {
+        dispatch(updateFocusedBlock({ blockId: nextSibling.id, caretPos, isMain }))
+        event.preventDefault()
+      }
+    }
   }
 
   const insertPageTitleAtCursor = (blockToInsert, event) => {
@@ -162,6 +184,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
   const setCaretPos = event => {
     if (isFocusedBlock) {
       event.target.selectionStart = focusedBlock.caretPos
+      event.target.selectionEnd = focusedBlock.caretPos
     } else if (cursorCaret.offsetX !== null) {
       translateCursorToCaretPos(event.target)
     }
@@ -182,11 +205,10 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
   const isFocusedBlock = focusedBlock.blockId
     && focusedBlock.blockId === block.id
     && focusedBlock.isMain === isMain
-    && focusedBlock.caretPos
+    && !isNaN(focusedBlock.caretPos)
 
   if (isFocusedBlock && textarea.current) {
     textarea.current.focus()
-    textarea.current.selectionStart = focusedBlock.caretPos
   }
 
   const onBlur = event => {
