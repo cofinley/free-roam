@@ -34,7 +34,7 @@ const Block = ({ block, isMain, isTitle }) => {
   const isFocusedBlock = focusedBlock.blockId
     && focusedBlock.blockId === block.id
     && focusedBlock.isMain === isMain
-    && focusedBlock.caretPos
+    && !isNaN(focusedBlock.caretPos)
 
   if (isFocusedBlock && !editing) {
     setEditing(true)

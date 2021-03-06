@@ -54,7 +54,15 @@ export const getPage = (block, blocks) => {
   return getPage(parentBlock, blocks)
 }
 
+export const isFirstPageChild = (block, blocks) => {
+  const pageBlock = getPage(block, blocks)
+  return block.parentId === pageBlock.id && pageBlock.childrenIds[0] === block.id
+}
+
 export const getPrevSibling = (block, blocks) => {
+  if (block.parentId === null) {
+    return null
+  }
   const parentBlock = blocks[block.parentId]
   const blockIndex = parentBlock.childrenIds.indexOf(block.id)
   if (blockIndex < 1) {
@@ -62,6 +70,19 @@ export const getPrevSibling = (block, blocks) => {
   }
   const prevSiblingBlock = blocks[parentBlock.childrenIds[blockIndex - 1]]
   return prevSiblingBlock
+}
+
+export const getNextSibling = (block, blocks) => {
+  if (block.parentId === null) {
+    return null
+  }
+  const parentBlock = blocks[block.parentId]
+  const blockIndex = parentBlock.childrenIds.indexOf(block.id)
+  if (blockIndex === parentBlock.childrenIds.length - 1) {
+    return null
+  }
+  const nextSiblingBlock = blocks[parentBlock.childrenIds[blockIndex + 1]]
+  return nextSiblingBlock
 }
 
 export const getLastChildLeaf = (block, blocks) => {
@@ -73,6 +94,9 @@ export const getLastChildLeaf = (block, blocks) => {
 }
 
 export const getNextBlockUp = (block, blocks) => {
+  if (!block.parentId || isFirstPageChild(block, blocks)) {
+    return null
+  }
   const prevSibling = getPrevSibling(block, blocks)
   if (prevSibling) {
     if (prevSibling.childrenIds.length) {
@@ -84,6 +108,20 @@ export const getNextBlockUp = (block, blocks) => {
     const parentBlock = blocks[block.parentId]
     return parentBlock
   }
+}
+
+export const getNextBlockDown = (block, blocks, checkChildren=true) => {
+  if (block.parentId === null) {
+    return null
+  }
+  if (checkChildren && block.childrenIds.length) {
+    return blocks[block.childrenIds[0]]
+  }
+  const nextSibling = getNextSibling(block, blocks)
+  if (nextSibling) {
+    return nextSibling
+  }
+  return getNextBlockDown(blocks[block.parentId], blocks, checkChildren=false)
 }
 
 export const serialize = (block, blocks) => {
