@@ -5,9 +5,27 @@
 .stage {
     > .editor, .daily-notes {
         padding: 50px 150px 120px;
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
     > .all-pages {
         padding: 50px 50px 120px;
     }
+}
+
+.show-sidebar__button {
+    padding: 5px 10px;
+    height: min-content;
+}
+
+.hide-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.show-sidebar__button, .hide-sidebar__button {
+    cursor: pointer;
+    margin-top: 8px;
 }

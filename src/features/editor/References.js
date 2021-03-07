@@ -93,8 +93,8 @@ const References = ({ block, isMain }) => {
         <div className="references references--linked">
           <span className="references__toggle no-select" onClick={() => setShowLinkedRefs(state => !state)}>
             {showLinkedRefs
-             ? <CaretDownFill color="white" />
-             : <CaretRightFill color="white" />
+              ? <CaretDownFill color="white" size={12} />
+              : <CaretRightFill color="white" size={12} />
             }
             <b>{references.length} Linked References</b>
           </span>
@@ -107,8 +107,8 @@ const References = ({ block, isMain }) => {
         <div className="references references--unlinked">
           <span className="references__toggle no-select" onClick={toggleUnlinkedReferences}>
             {showUnlinkedRefs
-             ? <CaretDownFill color="white" />
-             : <CaretRightFill color="white" />
+              ? <CaretDownFill color="white" size={12} />
+              : <CaretRightFill color="white" size={12} />
             }
             <b>{unlinkedRefs && unlinkedRefs.length ? unlinkedRefs.length : ''} Unlinked References</b>
           </span>

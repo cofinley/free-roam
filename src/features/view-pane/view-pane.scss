@@ -2,10 +2,11 @@
     min-width: 300px;
     width: 300px;
     background-color: rgba(0,0,0,0.5);
+    padding: 5px 20px 20px;
 }
 
 .view-pane__section {
-    padding: 20px;
+    padding: 20px 0;
 
     &:not(:last-child) {
         border-bottom: 1px solid gray;
