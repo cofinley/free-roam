@@ -5,7 +5,7 @@ import './block-actions.scss'
 
 import PageLink from '../links/PageLink'
 
-const BlockActions = ({ block, hasChildren, foldBlock, setFoldBlock }) => {
+const BlockActions = React.memo(({ block, hasChildren, foldBlock, setFoldBlock }) => {
   return (
     <div className="block-actions-container">
       <span className={`block-actions block-actions--toggle${hasChildren ? '' : ' hidden'}`}>
@@ -27,6 +27,6 @@ const BlockActions = ({ block, hasChildren, foldBlock, setFoldBlock }) => {
       </PageLink>
     </div>
   )
-}
+})
 
 export default BlockActions

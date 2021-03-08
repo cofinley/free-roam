@@ -45,6 +45,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
 
   const onTab = event => {
     event.preventDefault()
+    save(event.target.value)
     if (event.shiftKey) {
       dispatch(repositionBlock({ blockId: block.id, direction: 'backward' }))
     } else {
@@ -190,13 +191,7 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     }
   }
 
-  const save = event => {
-    if (!searching && block.text !== event.target.value) {
-      dispatch(updateBlock({ blockId: block.id, text: event.target.value }))
-    }
-  }
-
-  const forceSave = text => {
+  const save = text => {
     if (block.text !== text) {
       dispatch(updateBlock({ blockId: block.id, text }))
     }
@@ -212,7 +207,8 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
   }
 
   const onBlur = event => {
-    forceSave(event.target.value)
+    dispatch(updateFocusedBlock({ blockId: null, caretPos: null, isMain: null }))
+    save(event.target.value)
     onRender()
   }
 
@@ -224,7 +220,6 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
         autoFocus
         onFocus={setCaretPos}
         onKeyDown={onKeyDown}
-        onChange={save}
         onKeyUp={onKeyUp}
         onBlur={onBlur}
         defaultValue={block.text}

@@ -8,14 +8,13 @@ import { BlockModel } from './blockModel'
 import PageLink from '../links/PageLink'
 import { setLinks } from '../links/linksSlice'
 
-const RenderedBlock = ({ block, isTitle, onEdit }) => {
+const RenderedBlock = React.memo(({ block, isTitle, onEdit }) => {
   const dispatch = useDispatch()
   const blocks = useSelector(state => state.blocks)
-  const linksFrom = useSelector(state => state.links.from)
+  const linksFromBlock = useSelector(state => state.links.from[block.id])
 
   const rendered = () => {
-    const plaintext = block.text
-    const linkedPlaintext = renderLinks(plaintext)
+    const linkedPlaintext = renderLinks(block.text)
     const jsxMdArray = linkedPlaintext
       .map(element => {
         if (typeof element === 'string') {
@@ -44,9 +43,8 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
       )
     })
     const linksArray = Array.from(links)
-    const blockInFromLinks = block.id in linksFrom
     if (linksArray.length) {
-      if (!blockInFromLinks || !eqSet(new Set(linksArray), new Set(linksFrom[block.id]))) {
+      if (linksFromBlock === undefined || !eqSet(new Set(linksArray), new Set(linksFromBlock))) {
         dispatch(setLinks({ sourceBlockId: block.id, linkedBlockIds: linksArray }))
       }
     }
@@ -61,8 +59,7 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
 
   const linkToPage = text => {
     const foundPage = Object.values(blocks)
-      .filter(block => !block.parentId)
-      .find(block => block.text === text)
+      .find(block => !block.parentId && block.text === text)
     if (foundPage) {
       return foundPage
     }
@@ -76,9 +73,11 @@ const RenderedBlock = ({ block, isTitle, onEdit }) => {
       className={`block-text${isTitle ? ' block-text--title': ''}`}
       onClick={onEdit}
     >
-      {rendered()}
+      {rendered(block.text)}
     </span>
   )
-}
+}, (prevProps, nextProps) => {
+  return prevProps.block.text !== nextProps.block.text
+})
 
 export default RenderedBlock

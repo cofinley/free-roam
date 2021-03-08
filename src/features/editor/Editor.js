@@ -9,8 +9,7 @@ import Breadcrumbs from './Breadcrumbs'
 import BlockActions from '../block-actions/BlockActions';
 
 const Editor = ({ blockId, isRoot, showBreadcrumbs = false, isMain, fold = false }) => {
-  const blocks = useSelector(state => state.blocks)
-  const block = blocks[blockId]
+  const block = useSelector(state => state.blocks[blockId])
   const [foldBlock, setFoldBlock] = useState(fold)
   const [foldNextLevel, setFoldNextLevel] = useState(false)
 

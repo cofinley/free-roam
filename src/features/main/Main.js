@@ -11,38 +11,42 @@ import AllPages from '../all-pages/AllPages'
 const Main = props => {
   return (
     <div className="main">
-      <div className="stage">
-        <Route exact path="/">
-          <Redirect to="/page/welcome" />
-        </Route>
-        <Route
-          path="/page/:blockId"
-          render={({ match }) => (
-            <>
-              <Navbar blockId={match.params.blockId}/>
+      <Route exact path="/">
+        <Redirect to="/page/welcome" />
+      </Route>
+      <Route
+        path="/page/:blockId"
+        render={({ match }) => (
+          <>
+            <Navbar blockId={match.params.blockId} />
+            <div className="stage">
               <Editor blockId={match.params.blockId} isRoot isMain />
-            </>
-          )}
-        />
-        <Route
-          path="/daily-notes"
-          render={() => (
-            <>
-              <Navbar />
+            </div>
+          </>
+        )}
+      />
+      <Route
+        path="/daily-notes"
+        render={() => (
+          <>
+            <Navbar />
+            <div className="stage">
               <DailyNotes />
-            </>
-          )}
-        />
-        <Route
-          path="/all-pages"
-          render={() => (
-            <>
-              <Navbar />
+            </div>
+          </>
+        )}
+      />
+      <Route
+        path="/all-pages"
+        render={() => (
+          <>
+            <Navbar />
+            <div className="stage">
               <AllPages />
-            </>
-          )}
-        />
-      </div>
+            </div>
+          </>
+        )}
+      />
     </div>
   )
 }
