@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import initialState from "../../redux/initialState";
+
 const filePaneSlice = createSlice({
   name: 'filePane',
-  initialState: {
-    favoriteBlockIds: ['welcome', 'abcd', 'efgh', 'qoGY8XCw']
-  },
+  initialState: initialState.filePane,
   reducers: {
     setFilePaneState: (state, action) => {
       const newState = action.payload

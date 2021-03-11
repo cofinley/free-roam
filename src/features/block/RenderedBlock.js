@@ -76,8 +76,6 @@ const RenderedBlock = React.memo(({ block, isTitle, onEdit }) => {
       {rendered(block.text)}
     </span>
   )
-}, (prevProps, nextProps) => {
-  return prevProps.block.text !== nextProps.block.text
 })
 
 export default RenderedBlock

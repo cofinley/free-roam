@@ -1,15 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import initialState from '../../redux/initialState'
+
 const viewPaneSlice = createSlice({
   name: 'viewPane',
-  initialState: {
-    views: [
-      {
-        type: 'page',
-        blockId: 'efgh'
-      }
-    ]
-  },
+  initialState: initialState.viewPane,
   reducers: {
     setViewPaneState: (state, action) => {
       const newState = action.payload

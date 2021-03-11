@@ -9,16 +9,11 @@ import { createSlice } from '@reduxjs/toolkit'
 'to' holds backlinks, 'from' holds source blocks and helps build 'to'
 */
 
+import initialState from '../../redux/initialState'
+
 const linksSlice = createSlice({
   name: 'links',
-  initialState: {
-    to: {
-      'efgh': ['mnop']
-    },
-    from: {
-      'mnop': ['efgh']
-    }
-  },
+  initialState: initialState.links,
   reducers: {
     setLinksState: (state, action) => {
       const newState = action.payload

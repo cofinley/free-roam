@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 import { BlockModel } from './blockModel'
-import initialBlocks from './initialState.js'
+import initialState from '../../redux/initialState'
 
 const DEFAULT_TEXT = 'Click here to edit'
 
 const blocksSlice = createSlice({
   name: 'blocks',
-  initialState: initialBlocks,
+  initialState: initialState.blocks,
   reducers: {
     setBlocksState: (state, action) => {
       const newState = action.payload
