@@ -27,7 +27,7 @@ const ViewPaneBlock = ({ view }) => {
         output = <span>Block outline of {show ? ':' : <b><PageLink blockId={block.id}>{block.text}</PageLink></b>}</span>
         break
       case 'references':
-        output = <span>References to: <PageLink blockId={block.id}>{block.text}</PageLink></span>
+        output = <span>References to: <b><PageLink blockId={block.id}>{block.text}</PageLink></b></span>
         break
       default:
         output = <span>Outline of</span>

@@ -37,7 +37,10 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     const caretInfo = getCaretInfo(event.target.value, caretPos)
     if (caretInfo.caretInBrackets) {
       setSearching(true)
-      setQuery(caretInfo.textInBrackets)
+      // Support link aliases (e.g. [[short link name|my-long-link-which-i-dont-want-to-display]])
+      const linkTextBarIndex = caretInfo.textInBrackets.indexOf('|')
+      const queryStartIndex = linkTextBarIndex > -1 ? linkTextBarIndex + 1 : 0
+      setQuery(caretInfo.textInBrackets.substring(queryStartIndex).trim())
     } else {
       setSearching(false)
     }
@@ -134,7 +137,10 @@ const EditBlock = ({ block, isMain, isTitle, cursorCaret, setCursorCaret, onRend
     const value = textarea.current.value
     const caretPos = textarea.current.selectionStart
     const caretInfo = getCaretInfo(value, caretPos)
-    const beforeTitle = value.substring(0, caretInfo.startBracketIndex + 2)
+    // Check if using link alias '|'. If so, include that in the `beforeTitle`.
+    const linkTextBarIndex = caretInfo.textInBrackets.indexOf('|') + caretInfo.startBracketIndex + 2
+    const beforeTitleStartIndex = Math.max(caretInfo.startBracketIndex + 2, linkTextBarIndex + 1)
+    const beforeTitle = value.substring(0, beforeTitleStartIndex)
     const afterTitle = value.substring(caretInfo.endBracketIndex)
     const newValue = beforeTitle + title + afterTitle
     textarea.current.value = newValue

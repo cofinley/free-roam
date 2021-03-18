@@ -14,7 +14,7 @@ function Shortcuts(props) {
       <PageLink
         blockId={blockId}
         key={blockId}
-        className="list-group-item list-group-item-action bg-dark text-light"
+        className="file-pane__item"
       >
         {block.text}
       </PageLink>

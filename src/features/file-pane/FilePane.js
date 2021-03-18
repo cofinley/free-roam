@@ -16,14 +16,14 @@ const FilePane = ({ setShowFilePane }) => {
       <Link to="/"><h2 className="text-light text-center">Free-roam</h2></Link>
       <IO />
       <div className="list-group list-group-flush mt-3">
-        <Link to="/daily-notes" className="list-group-item list-group-item-action bg-dark text-light">
+        <Link to="/daily-notes" className="file-pane__item">
           <Calendar3 color="white" /> Daily Notes
         </Link>
-        <Link to="/all-pages" className="list-group-item list-group-item-action bg-dark text-light">
+        <Link to="/all-pages" className="file-pane__item">
           <Justify color="white" /> All Pages
         </Link>
       </div>
-      <hr />
+      <hr className="border-top" />
       <Shortcuts />
     </div>
   )

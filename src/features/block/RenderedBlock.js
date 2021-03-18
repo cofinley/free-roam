@@ -31,14 +31,24 @@ const RenderedBlock = React.memo(({ block, isTitle, onEdit }) => {
     const pat = /\[\[([^[\]]*)\]\]/g
     const links = new Set()
     const jsxArray = reactStringReplace(text, pat, (match, i) => {
-      const pageBlock = linkToPage(match)
+      // Support optional link aliases (e.g. [[short link name|my-long-link-which-i-dont-want-to-display]])
+      const linkParts = match.split('|')
+      let pageTitle, linkText
+      if (linkParts.length === 2) {
+        linkText = linkParts[0].trim()
+        pageTitle = linkParts[1].trim()
+      } else if (linkParts.length === 1) {
+        pageTitle = linkParts[0].trim()
+      }
+      const pageBlock = linkToPage(pageTitle)
+      linkText = linkText || pageBlock.text
       links.add(pageBlock.id)
       return (
         <PageLink
-          key={`${match}-${i}`}
+          key={`${pageTitle}-${i}`}
           blockId={pageBlock.id}
         >
-          {pageBlock.text}
+          {linkText}
         </PageLink>
       )
     })
