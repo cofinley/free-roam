@@ -41,7 +41,7 @@ const References = ({ block, isMain }) => {
   }
 
   const getUnlinkedReferences = text => {
-    const titlePat = new RegExp(`(?<![\\[\\w])${text}(?![\\[\\w]+)`, 'gi')
+    const titlePat = new RegExp(`(?<![\\[\\w](\\|)?)${text}(?![\\[\\w]+)`, 'gi')
     const unlinkedReferenceBlocks = Object.values(blocks)
       .filter(referenceBlock => referenceBlock.parentId && titlePat.test(referenceBlock.text))
     return unlinkedReferenceBlocks
